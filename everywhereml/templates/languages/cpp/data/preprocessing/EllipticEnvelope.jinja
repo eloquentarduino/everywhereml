@@ -1,0 +1,45 @@
+{% extends './templates/Step.jinja' %}
+
+{% block public %}
+
+    /**
+     * @inplace
+     */
+    bool transform(float *source) {
+        float delta[{{ v | shape }}] = {{ -v | to_array }};
+        float mahalanobis = {{ offset }};
+
+        for (uint16_t i = 0; i < {{ v | length }}; i++) {
+            delta[i] += source[i];
+        }
+
+        // compute delta . VI . delta
+        for (uint16_t i = 0; i < {{ v | length }}; i++) {
+            mahalanobis -= delta[i] * dot(delta, VI[i]);
+        }
+
+        return mahalanobis >= 0;
+    }
+
+{% endblock %}
+
+{% block protected %}
+
+    float v[{{ v | shape }}] = {{ v | to_array }};
+    float VI[{{ VI | shape }}] = {{ VI | to_array }};
+
+
+    /**
+     * Dot product
+     */
+    float dot(float *a, float *b) {
+        float sum = 0;
+
+        for (uint16_t i = 0; i < {{ v | length }}; i++) {
+            sum += a[i] * b[i];
+        }
+
+        return sum;
+    }
+
+{% endblock %}

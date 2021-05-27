@@ -1,0 +1,25 @@
+{% extends './templates/Step.jinja' %}
+
+{% block public %}
+
+    /**
+     *
+     */
+    bool transform(float *source) {
+        counter += 1;
+
+        if (counter == {{ skip + 1 }}) {
+            counter = 0;
+
+            return true;
+        }
+
+        return false;
+    }
+
+{% endblock %}
+
+{% block protected %}
+    uint16_t counter = 0;
+
+{% endblock %}

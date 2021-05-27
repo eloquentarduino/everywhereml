@@ -1,0 +1,21 @@
+{% extends './templates/Step.jinja' %}
+
+{% block public %}
+
+    /**
+     * @inplace
+     */
+    bool transform(float *source) {
+        int polynomialFeaturesStartIndex = {{ input_dim }};
+
+        for (int i = 0; i < {{ input_dim }}; i++) {
+            for (int j = i {% if interaction_only %}+ 1{% endif %}; j < {{ input_dim }}; j++) {
+                source[polynomialFeaturesStartIndex++] = source[i] * source[j];
+            }
+        }
+
+
+        return true;
+    }
+
+{% endblock %}

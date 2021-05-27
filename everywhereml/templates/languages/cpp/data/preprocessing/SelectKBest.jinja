@@ -1,0 +1,22 @@
+{% extends './templates/Step.jinja' %}
+
+{% block public %}
+
+    /**
+     * @inplace
+     */
+    bool transform(float *source) {
+        for (int i = 0; i < {{ k }}; i++) {
+            source[i] = source[idx[i]];
+        }
+
+
+        return true;
+    }
+
+{% endblock %}
+
+{% block protected %}
+    uint16_t idx[{{ idx | length }}] = {{ idx | to_array }};
+
+{% endblock %}

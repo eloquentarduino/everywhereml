@@ -1,0 +1,10 @@
+{% extends './templates/Step.jinja' %}
+{% set name = 'Step' %}
+
+{% block public %}
+    /**
+     * Step interface
+     */
+    virtual bool transform(float *source) = 0;
+
+{% endblock %}

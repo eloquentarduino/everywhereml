@@ -1,0 +1,66 @@
+{% extends './templates/Step.jinja' %}
+
+{% block public %}
+    /**
+     *
+     */
+    bool transform(float *source) {
+        // compute all features in parallel
+        float harmonic = 0;
+        {% if lookup %}
+            float lookup[{{ lookup | shape }}] = {{ lookup | to_array }};
+        {% endif %}
+
+        for (uint16_t f = 0; f < {{ fft_length }}; f++) {
+            // optimized case
+            if (f == 0) {
+                for (uint16_t k = 0, offset = 0; k < {{ num_features }}; k++, offset += {{ fft_length }}) {
+                    float sum = 0;
+
+                    for (uint16_t i = k; i < {{ input_dim }}; i += {{ num_features }}) {
+                        sum += source[i];
+                    }
+
+                    buffer[offset] = sum * sum;
+                }
+            }
+            else {
+                float re[{{ num_features }}] = {0};
+                float im[{{ num_features }}] = {0};
+
+                for (uint16_t i = 0, offset = 0; i < {{ num_samples }}; i++, offset += {{ num_features }}) {
+                    const float harmonic_i = harmonic * i;
+                    {% if lookup %}
+                        // lookup cosine and interpolate
+                        const uint8_t idx = harmonic_i * 28.66 + 1;
+                        const float cos_i = (lookup[idx - 1] + lookup[idx] + lookup[idx + 1]) / 3;
+                    {% else %}
+                        const float cos_i = cos(harmonic_i);
+                    {% endif %}
+                    // const float sin_i = sin(harmonic_i);
+                    // sqrt() is much faster than sin
+                    const float sin_i = sqrt(harmonic_i > PI/2 ? -(1 - cos_i * cos_i) : (1 - cos_i * cos_i));
+
+                    for (uint16_t k = 0; k < {{ num_features }}; k++) {
+                        float s = source[offset + k];
+
+                        re[k] += s * cos_i;
+                        im[k] += s * sin_i;
+                    }
+                }
+
+                // append computed values
+                for (uint16_t k = 0, offset = f; k < {{ num_features }}; k++, offset += {{ fft_length }}) {
+                    buffer[offset] = re[k] * re[k] + im[k] * im[k];
+                }
+            }
+
+            harmonic += {{ 2 * PI / num_samples }};
+        }
+
+        memcpy(source, buffer, sizeof(float) * {{ num_features * fft_length }});
+
+        return true;
+     }
+
+{% endblock %}

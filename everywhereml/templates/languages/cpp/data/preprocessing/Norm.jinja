@@ -1,0 +1,35 @@
+{% extends './templates/Step.jinja' %}
+
+{% block public %}
+
+    /**
+     * @inplace
+     */
+    bool transform(float *source) {
+        float norm = 0;
+        float invNorm = 0;
+
+        for (uint16_t i = 0; i < {{ input_dim }}; i++) {
+            {% if norm == 'l1' %}
+                norm += abs(source[i]);
+            {% elif norm == 'l2' %}
+                norm += pow(source[i], 2);
+            {% else %}
+                ERROR: unknown norm {{ norm }}
+            {% endif %}
+        }
+
+        {% if norm == 'l2' %}
+            norm = sqrt(norm);
+        {% endif %}
+
+        invNorm = 1 / norm;
+
+        for (uint16_t i = 0; i < {{ input_dim }}; i++) {
+            source[i] *= invNorm;
+        }
+
+        return true;
+    }
+
+{% endblock %}

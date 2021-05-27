@@ -1,0 +1,36 @@
+{% extends './templates/Step.jinja' %}
+
+{% block public %}
+
+    /**
+     * @async
+     */
+    bool transform(float *source) {
+        // append source to queue
+        memcpy(queue + head, source, sizeof(float) * {{ input_dim }});
+        head += {{ input_dim }};
+
+        if (head != {{ length * input_dim }}) {
+            return false;
+        }
+
+        // copy queue to source and shift
+        memcpy(source, queue, sizeof(float) * {{ length * input_dim }});
+
+        {% if shift != length %}
+            memcpy(queue, queue + {{ shift * input_dim }}, sizeof(float) * {{ (length - shift) * input_dim }});
+        {% endif %}
+
+        head -= {{ shift * input_dim }};
+
+        return true;
+    }
+
+{% endblock %}
+
+{% block protected %}
+
+    uint16_t head = 0;
+    float queue[{{ length * input_dim }}] = {0};
+
+{% endblock %}

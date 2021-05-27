@@ -1,0 +1,159 @@
+{% extends './templates/Step.jinja' %}
+
+{% block public %}
+
+    /**
+     * @inplace
+     */
+    bool transform(float *source) {
+        uint16_t idx = 0;
+        const float global_low[] = {{ constants['global_low'] | to_array }};
+        const float global_high[] = {{ constants['global_high'] | to_array }};
+
+        for (uint16_t k = 0; k < {{ num_features }}; k++) {
+            float minimum = 9999999;
+            float maximum = -9999999;
+            float abs_minimum = 999999;
+            float abs_maximum = 0;
+            float mean = 0;
+            float abs_energy = 0;
+            float mean_abs_change = 0;
+            float c31 = 0;
+            float cid_ce = 0;
+            float energy_ratio = 0;
+            float mean_second_derivative_center = 0;
+            float zero_crossings = 0;
+            float range_count = 0;
+            float time_reversal_asymmetry_statistic1 = 0;
+            float _xi_prev = source[k];
+
+            for (uint16_t i = k; i < {{ input_dim }}; i += {{ num_features }}) {
+                float _xi = source[i];
+                float _abs_xi = abs(_xi);
+                float _xi_prev2 = (i >= k + {{ 2 * num_features }}) ? source[i - {{ 2 * num_features }}] : _xi;
+
+                float helper_xi2 = _xi * _xi;
+                float helper_diff = _xi - _xi_prev;
+
+                // start of features
+                minimum = _xi < minimum ? _xi : minimum;
+                maximum = _xi > maximum ? _xi : maximum;
+                abs_minimum = _abs_xi < abs_minimum ? _abs_xi : abs_minimum;
+                abs_maximum = _abs_xi > abs_maximum ? _abs_xi : abs_maximum;
+                mean += _xi;
+                abs_energy += helper_xi2;
+                mean_abs_change += abs(helper_diff);
+                cid_ce += helper_diff * helper_diff;
+
+                if ((i - k) >= {{ num_samples * num_features * 3/8 | ceil }} && (i - k) <= {{ num_samples * num_features * 5/8 | floor }}) { energy_ratio += helper_xi2; }
+                if (_xi >= global_low[k] && _xi <= global_high[k]) { range_count += 1; }
+
+                {% if 'lag2' in opt %}
+                    // lag-2 features
+                    if (i >= k + {{ 2 * num_features }}) {
+                        c31 += _xi * _xi_prev * _xi_prev2;
+                        mean_second_derivative_center += helper_diff - _xi_prev + _xi_prev2; // equivalent of xi - 2 * xi_prev + xi_prev2;
+                        time_reversal_asymmetry_statistic1 += _xi_prev * (helper_xi2 - _xi_prev2 * _xi_prev2);
+
+                        if (helper_diff * (_xi_prev - _xi_prev2) < 0) { zero_crossings += 1;}
+                    }
+                {% endif %}
+
+                _xi_prev = _xi;
+            }
+
+            mean *= {{ 1 / num_samples }};
+
+            {% if is_second_order %}
+                // second-order features
+                float _xi_mean_prev = source[k] - mean;
+                float autocorrelation1 = 0;
+                float count_above_mean = 0;
+                float count_below_mean = 0;
+                float first_position_of_max = {{ num_samples * num_features }};
+                float first_position_of_min = {{ num_samples * num_features }};
+                float has_duplicate_max = 0;
+                float has_duplicate_max_thresh = maximum - abs(maximum) * 0.02;
+                float has_duplicate_min = 0;
+                float has_duplicate_min_thresh = minimum + abs(minimum) * 0.02;
+                float var = 0;
+                float std = 0;
+                float kurtosis = 0;
+                float skew = 0;
+                float has_large_std = 0;
+                float variation_coefficient = 0;
+
+                for (uint16_t i = k; i < {{ input_dim }}; i += {{ num_features }}) {
+                    float _xi = source[i];
+                    float _xi_mean = _xi - mean;
+                    float var_i = _xi_mean * _xi_mean;
+
+                    // start of features
+                    var += var_i;
+                    autocorrelation1 += _xi_mean * _xi_mean_prev;
+                    count_above_mean += _xi_mean >  1e-5 ? 1 : 0;
+                    count_below_mean += _xi_mean < -1e-5 ? 1 : 0;
+                    first_position_of_max = (i < first_position_of_max && abs(_xi - maximum) < 1e-5) ? i : first_position_of_max;
+                    first_position_of_min = (i < first_position_of_min && abs(_xi - minimum) < 1e-5) ? i : first_position_of_min;
+
+                    if (var_i > 1e-3) { skew += var_i * _xi_mean; }
+                    if (var_i > 1e-3) { kurtosis += var_i * var_i; }
+                    if (_xi > has_duplicate_max_thresh) { has_duplicate_max += 1; }
+                    if (_xi < has_duplicate_min_thresh) { has_duplicate_min += 1; }
+
+                    _xi_mean_prev = _xi_mean;
+                }
+
+                var *= {{ 1 / num_samples }};
+                std = sqrt(var);
+                first_position_of_max = int((first_position_of_max - k) * {{ 1 / num_features }});
+                first_position_of_min = int((first_position_of_min - k) * {{ 1 / num_features }});
+                skew = var > {{ eps }} ? skew / pow(var, 1.5) : 0;
+                kurtosis = var > {{ eps }} ? kurtosis / (var * var) : 0;
+                has_large_std = std > 0.25 * (maximum - minimum);
+                variation_coefficient = (mean > {{ eps }}) ? var / mean : 0;
+            {% endif %}
+            
+            buffer[idx++] = maximum;
+            buffer[idx++] = minimum;
+            buffer[idx++] = abs_maximum;
+            buffer[idx++] = abs_minimum;
+            buffer[idx++] = mean;
+            buffer[idx++] = abs_energy;
+            buffer[idx++] = mean_abs_change;
+            buffer[idx++] = cid_ce;
+            buffer[idx++] = energy_ratio;
+            buffer[idx++] = range_count;
+
+            // first-order, lag-2 features
+            buffer[idx++] = c31;
+            buffer[idx++] = mean_second_derivative_center;
+            buffer[idx++] = time_reversal_asymmetry_statistic1;
+
+            // second-order features
+            buffer[idx++] = std;
+            buffer[idx++] = var;
+            buffer[idx++] = count_above_mean;
+            buffer[idx++] = count_below_mean;
+            buffer[idx++] = first_position_of_max;
+            buffer[idx++] = first_position_of_min;
+            buffer[idx++] = has_duplicate_max;
+            buffer[idx++] = has_duplicate_min;
+            buffer[idx++] = has_large_std;
+            buffer[idx++] = autocorrelation1;
+            buffer[idx++] = skew;
+            buffer[idx++] = kurtosis;
+            buffer[idx++] = zero_crossings;
+            buffer[idx++] = variation_coefficient;
+        }
+
+        memcpy(source, buffer, {{ buffer_size }} * sizeof(float));
+
+        return true;
+    }
+
+{% endblock %}
+
+{% block protected %}
+
+{% endblock %}

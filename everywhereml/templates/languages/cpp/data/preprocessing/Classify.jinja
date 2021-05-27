@@ -1,0 +1,22 @@
+{% extends './templates/Step.jinja' %}
+
+{% block preamble %}
+    {{ clf_code }}
+{% endblock %}
+
+{% block public %}
+
+    /**
+     * @inplace
+     */
+    bool transform(float *source) {
+        source[0] = clf.predict(source);
+
+        return true;
+    }
+
+{% endblock %}
+
+{% block protected %}
+    Eloquent::ML::Port::Classifier clf;
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends './templates/Step.jinja' %}
+
+{% block public %}
+    /**
+     * @inplace
+     */
+    bool transform(float *source) {
+        for (uint16_t i = 0; i < {{ input_dim }}; i++) {
+            {% if num_features == 0 %}
+               source[i] = (source[i] - {{ min }}) * {{ inv_range }};
+            {% else %}
+                source[i] = (source[i] - m[i % {{ num_features }}]) * invRange[i % {{ num_features }}];
+            {% endif %}
+        }
+
+        return true;
+    }
+
+{% endblock %}
+
+{% block protected %}
+
+    {% if num_features > 0 %}
+        float m[{{ min | shape }}] = {{ min | to_array }};
+        float invRange[{{ inv_range | shape }}] = {{ inv_range | to_array }};
+    {% endif %}
+
+{% endblock %}

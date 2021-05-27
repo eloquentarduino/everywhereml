@@ -1,0 +1,30 @@
+{% extends './templates/Step.jinja' %}
+
+{% block public %}
+
+    /**
+     * @inplace
+     */
+    bool transform(float *source) {
+        for (uint16_t i = 0; i < {{ input_dim }}; i++) {
+            float lambda = lambdas[i];
+            float xi = source[i];
+
+            if (xi > 0) {
+                source[i] = abs(lambda) < 1e-10 ? log(1 + xi) : (pow(xi + 1, lambda) - 1) / lambda;
+            }
+            else {
+                source[i] = abs(lambda - 2) < 1e-10 ? -log(1 - xi) : -(pow(-xi + 1, 2 - lambda) - 1) / (2 - lambda);
+            }
+        }
+
+        return true;
+    }
+
+{% endblock %}
+
+{% block protected %}
+
+    float lambdas[{{ input_dim }}] = {{ lambdas | to_array }};
+
+{% endblock %}
