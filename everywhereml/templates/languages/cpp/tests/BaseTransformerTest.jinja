@@ -1,0 +1,31 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+using namespace std;
+
+{{ transformer }}
+
+
+int main() {
+    EverywhereML::Data::Preprocessing::FromPython::Transformer transformer;
+    float X[{{ X | shape }}] = {{ X | to_array }};
+    int y[{{ y | shape }}] = {{ y | to_array }};
+
+    cout << "[" << endl;
+
+    for (int i = 0; i < {{ X | length }}; i++) {
+        if (transformer.transform(X[i])) {
+
+        }
+    }
+        int y_pred = clf.predict(X[i]);
+
+        if (y_pred != y[i]) {
+            printf("ERROR[%d]: expected %d, got %d\n", i, y[i], y_pred);
+        }
+    }
+
+    cout << "]" << endl;
+
+    return 0;
+}

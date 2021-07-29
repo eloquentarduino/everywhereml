@@ -1,0 +1,20 @@
+/**
+ * Compute dot product
+ */
+float dot(float *x, ...) {
+    va_list w;
+    va_start(w, {{ num_inputs }});
+    float dot = 0.0f;
+
+    for (uint16_t i = 0; i < {{ num_inputs }}; i++) {
+        const float wi = va_arg(w, double);
+
+        {% if expr is defined %}
+            dot += {{ expr }};
+        {% else %}
+            dot += x[i] * wi;
+        {% endif %}
+    }
+
+    return dot;
+}

@@ -4,9 +4,9 @@ from everywhereml.data.preprocessing.BaseTransformer import BaseTransformer
 
 class MinMaxScaler(BaseTransformer):
     """
-    sklearn.preprocessing.MinMaxScaler wrapper
+    sklearn.preprocessing.MinMaxScaler implementation
     """
-    def __init__(self, num_features=-1, name='MinMaxScaler'):
+    def __init__(self, num_features=1, name='MinMaxScaler'):
         """
         :param num_features: int 0 for global, -1 for each feature, n for a specific number
         :param name: str default="MinMaxScaler"
@@ -24,7 +24,7 @@ class MinMaxScaler(BaseTransformer):
         :param X: np.ndarray
         :param y: np.ndarray
         """
-        if self.num_features == -1:
+        if self.num_features == 1:
             self.num_features = self.input_dim
 
         if self.num_features == 0:
@@ -33,7 +33,10 @@ class MinMaxScaler(BaseTransformer):
             self.max = X.max()
         else:
             # min/max at slices of num_features
-            assert (self.input_dim % self.num_features) == 0, 'num_features MUST be a divisor of X.shape[1]'
+            if self.num_features == -1:
+                self.num_features = self.input_dim
+
+            assert self.num_features <= self.input_dim and (self.input_dim % self.num_features) == 0, 'num_features MUST be a divisor of X.shape[1]'
             
             mins = [X[:, i::self.num_features].min() for i in range(self.num_features)]
             maxs = [X[:, i::self.num_features].max() for i in range(self.num_features)]
@@ -50,15 +53,17 @@ class MinMaxScaler(BaseTransformer):
         :return: tuple
         """
         assert self.min is not None and self.max is not None, 'Unfitted'
+        assert self.min != self.max, 'Bad fitting ({} - {})'.format(self.min, self.max)
 
         return (X - self.min) / (self.max - self.min), y
 
-    def get_template_data(self):
+    def get_template_data(self, **kwargs):
         """
         Get template data
         :return: dict
         """
         return {
+            'num_features': self.num_features,
             'min': self.min[:self.num_features] if self.num_features > 0 else self.min,
             'inv_range': 1 / (self.max - self.min)[:self.num_features] if self.num_features > 0 else 1 / (self.max - self.min),
         }

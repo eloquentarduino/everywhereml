@@ -1,0 +1,33 @@
+<?php
+
+
+class {{ classname }} {
+    {% block attributes %}{% endblock %}
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        {% block constructor %}{% endblock %}
+    }
+
+    /**
+     * input_dim  = {{ input_dim }}
+     * output_dim = {{ output_dim }}
+     * @return array|false
+     */
+    public function transform(array $source) {
+        {% block transform %}{% endblock %}
+    }
+
+    /**
+     * input_dim  = {{ input_dim }}
+     * output_dim = {{ output_dim }}
+     * @return array|false
+     */
+    public function transformAll(array $X) {
+        return array_map([$this, 'transform'], $X);
+    }
+
+    {% block protected %}{% endblock %}
+};

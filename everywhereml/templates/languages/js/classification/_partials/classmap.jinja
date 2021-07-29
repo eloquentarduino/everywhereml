@@ -1,0 +1,24 @@
+{% if classmap is not none %}
+
+    /**
+     * Predict readable class name
+     */
+    this.predictLabel(x) {
+        return this.idxToLabel(this.predict(x));
+    }
+
+    /**
+     * Convert class idx to readable name
+     */
+    this.idxToLabel(classIdx) {
+        switch (classIdx) {
+            {% for idx, name in classmap.items() %}
+                case {{ idx }}:
+                    return "{{ name }}";
+            {% endfor %}
+            default:
+                return "ERROR";
+        }
+    }
+
+{% endif %}

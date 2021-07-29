@@ -1,0 +1,18 @@
+{% extends './BaseTransformer.jinja' %}
+
+{% block constructor %}
+    this.mean = {{ mean | to_array }};
+    this.invStd = {{ inv_std | to_array }};
+{% endblock %}
+
+{% block transform %}
+    {% if num_features == 0 %}
+        return source.map(function(x) {
+            return (x - {{ mean }}) * {{ inv_std }};
+        });
+    {% else %}
+        return source.map(function(x, i) {
+            return (x - $this.mean[i % {{ num_features }}]) * $this.invStd[i % {{ num_features }}];
+        });
+    {% endif %}
+{% endblock %}

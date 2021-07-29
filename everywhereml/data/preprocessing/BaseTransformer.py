@@ -17,6 +17,8 @@ class BaseTransformer(IsPortableMixin):
         self.input_dim = 0
         self.output_samples = 0
         self.output_dim = 0
+        self.buffer_size = 0
+        self.shared_buffer = False
 
     def fit(self, X, y=None):
         """
@@ -31,6 +33,9 @@ class BaseTransformer(IsPortableMixin):
 
         self.input_samples, self.input_dim = X.shape
         self._fit(X, y)
+
+        # transform one sample to detect output shape
+        self.transform(X[:1], y[:1])
 
         return self
 
@@ -47,7 +52,7 @@ class BaseTransformer(IsPortableMixin):
 
         X, y = self._transform(X, y)
 
-        self.output_samples, self.output_dim = X.shape
+        self.output_samples, self.output_dim = X.shape[:2]
 
         return X, y
 
@@ -80,16 +85,18 @@ class BaseTransformer(IsPortableMixin):
         """
         raise NotImplemented('_transform not implemented')
 
-    def get_template_data_defaults(self):
+    def get_default_template_data(self):
         """
         Get more template data
         :return: dict
         """
         return {
-            **super().get_template_data_defaults(),
+            **super().get_default_template_data(),
             **{
                 'classname': self.name,
                 'input_dim': self.input_dim,
-                'output_dim': self.output_dim
+                'output_dim': self.output_dim,
+                'buffer_size': self.buffer_size,
+                'shared_buffer': self.shared_buffer
             }
         }

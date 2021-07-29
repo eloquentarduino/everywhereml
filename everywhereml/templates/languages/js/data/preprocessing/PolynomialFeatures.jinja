@@ -1,0 +1,14 @@
+{% extends './BaseTransformer.jinja' %}
+
+{% block transform %}
+    let polynomial = []
+
+    for (let i = 0; i < {{ input_dim }}; i++) {
+        for (let j = i + {{ offset }}; j < {{ input_dim }}; j++) {
+            polynomial.push(source[i] * source[j]);
+        }
+    }
+
+    return source.concat(polynomial)
+
+{% endblock %}

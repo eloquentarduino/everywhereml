@@ -1,0 +1,27 @@
+{% extends './BaseTransformer.jinja' %}
+
+{% block attributes %}
+    /**
+     * @array
+     */
+    protected $lambdas;
+{% endblock %}
+
+
+{% block constructor %}
+    $this->lambdas = {{ lambdas | to_array }};
+{% endblock %}
+
+
+{% block transform %}
+    return array_map(function(float $x, int $i) {
+        $lambda = $this->lambdas[$i];
+
+        if ($x > 0) {
+            return abs($lambda) < 1e-10 ? log(1 + $x) : (pow($x + 1, $lambda) - 1) / $lambda;
+        }
+
+        return abs($lambda - 2) < 1e-10 ? -log(1 - $x) : -(pow(-$x + 1, 2 - $lambda) - 1) / (2 - $lambda);
+
+    }, $source, array_keys(array_values($source)));
+{% endblock %}

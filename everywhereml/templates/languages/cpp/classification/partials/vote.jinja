@@ -1,0 +1,12 @@
+// return argmax of votes
+uint8_t classIdx = 0;
+float maxVotes = votes[0];
+
+for (uint8_t i = 1; i < {{ num_classes }}; i++) {
+    if (votes[i] > maxVotes) {
+        classIdx = i;
+        maxVotes = votes[i];
+    }
+}
+
+return classIdx;

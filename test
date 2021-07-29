@@ -1,0 +1,3 @@
+#!/bin/bash
+
+fswatch -r -o -e 'pyc' . | (while read; do nosetests; done)

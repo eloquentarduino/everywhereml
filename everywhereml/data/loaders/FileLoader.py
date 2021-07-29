@@ -1,14 +1,14 @@
-import os.path
 import numpy as np
 import pandas as pd
-from csv import Sniffer
-from everywhereml.data.loaders.BaseLoader import BaseLoader
+
 from everywhereml.data.Dataset import Dataset
+from everywhereml.data.loaders.BaseLoader import BaseLoader
 
 
 class FileLoader(BaseLoader):
     """
     Load data from file
+    (uses pandas.read_csv internally)
     """
     def __init__(self, filename, target_column=-1, **kwargs):
         """
@@ -17,7 +17,7 @@ class FileLoader(BaseLoader):
         :param columns: str|list a list of column names, or 'auto' to infer the names from the file
         :param target_column: int|str the name of the column that holds the labels
         """
-        assert isinstance(target_column, int) or isinstance(target_column, str), 'target_column MUST be an integer or a string'
+        assert target_column is None or isinstance(target_column, int) or isinstance(target_column, str), 'target_column MUST be None, an integer or a string'
 
         # add target column to usecols
         usecols = kwargs.get('usecols', None)
@@ -41,14 +41,19 @@ class FileLoader(BaseLoader):
         except ValueError:
             pass
 
-        if isinstance(target_column, int):
-            target_column = df.columns[target_column]
-
+        # only keep numeric columns
         data_columns = [column for column, dtype in zip(df.columns, df.dtypes)
-                        if column != target_column and
-                        (str(dtype).startswith('int') or str(dtype).startswith('float'))]
+                        if (str(dtype).startswith('int') or str(dtype).startswith('float'))]
+
+        if target_column is None:
+            y = np.zeros(len(df), dtype=np.uint8)
+        else:
+            if isinstance(target_column, int):
+                target_column = df.columns[target_column]
+
+            data_columns = [column for column in data_columns if column != target_column]
+            y = df[target_column].to_numpy()
 
         X = df[data_columns].to_numpy()
-        y = df[target_column].to_numpy()
 
         self.dataset = Dataset(X, y, data_columns)

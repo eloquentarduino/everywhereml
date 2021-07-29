@@ -1,0 +1,14 @@
+{% extends './BaseTransformer.jinja' %}
+
+{% block transform %}
+    uint16_t featureIdx = 0;
+
+    for (uint16_t i = 0; i < {{ input_dim - 1 }}; i++) {
+        for (uint16_t j = i + 1; j < {{ input_dim }}; j++) {
+            source[{{ input_dim }} + (featureIdx++)] = source[i] - source[j];
+        }
+    }
+
+    return true;
+
+{% endblock %}

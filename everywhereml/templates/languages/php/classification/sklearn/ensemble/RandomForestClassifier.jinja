@@ -1,0 +1,14 @@
+{% extends '../../BaseClassifier.jinja' %}
+
+{% block predict %}
+    $votes = {{ np.zeros(num_classes) | to_array }};
+
+    {% for k, tree in enumerate(trees) %}
+        {% with i = 0, left = tree['left'], right = tree['right'], features = tree['features'], thresholds = tree['thresholds'], classes = tree['classes'] %}
+            // tree #{{ k + 1 }}
+            {% include './_tree.jinja' %}
+        {% endwith %}
+    {% endfor %}
+
+    {% include '../../_partials/vote.jinja' %}
+{% endblock %}

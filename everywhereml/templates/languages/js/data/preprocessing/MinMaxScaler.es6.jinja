@@ -1,0 +1,14 @@
+{% extends './BaseTransformer.jinja' %}
+
+{% block constructor %}
+    this.m = {{ min | to_array }}
+    this.invRange = {{ inv_range | to_array }}
+{% endblock %}
+
+{% block transform %}
+    {% if num_features == 0 %}
+        return source.map(x => (x - {{ min }}) * {{ inv_range }})
+    {% else %}
+        return source.map((x, i) => (x - $this.m[i % {{ num_features }}]) * $this.invRange[i % {{ num_features }}])
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends '../../BaseClassifier.jinja' %}
+
+{% block predict %}
+    float votes[{{ classes | length }}] = { 0.0f };
+
+    {% for i, w in enumerate(weights) %}
+        votes[{{ i }}] = dot(x, {{ w | to_array(with_parentheses=False) }});
+    {% endfor %}
+
+    {% include '../../partials/vote.jinja' %}
+{% endblock %}
+
+{% block protected %}
+    {% include '../../partials/dot.jinja' %}
+{% endblock %}

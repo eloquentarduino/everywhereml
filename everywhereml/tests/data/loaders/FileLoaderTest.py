@@ -33,3 +33,8 @@ class FileLoaderTest(TestCase):
 
         self.assertEqual(['a', 'c'], data.columns)
         self.assertEqual(1, data.y[0])
+
+    def test_no_target_column(self):
+        data = FileLoader('columns.csv', target_column=None)
+
+        self.assertEqual(4, len(data.columns))

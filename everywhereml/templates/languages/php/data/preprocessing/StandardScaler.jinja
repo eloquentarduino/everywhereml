@@ -1,0 +1,32 @@
+{% extends './BaseTransformer.jinja' %}
+
+{% block attributes %}
+    /**
+     * @array mean values
+     */
+    protected $mean;
+
+    /**
+     * @array inverse of stds
+     */
+    protected $invStd;
+{% endblock %}
+
+
+{% block constructor %}
+    $this->mean = {{ mean | to_array }};
+    $this->invStd = {{ inv_std | to_array }};
+{% endblock %}
+
+
+{% block transform %}
+    {% if num_features == 0 %}
+        return array_map(function(float $x) {
+            return ($x - {{ mean }}) * {{ inv_std }};
+        }, $source);
+    {% else %}
+        return array_map(function(float $x, int $i) {
+            return ($x - $this->mean[$i % {{ num_features }}]) * $this->invStd[$i % {{ num_features }}];
+        }, $source, array_keys(array_values($source)));
+    {% endif %}
+{% endblock %}

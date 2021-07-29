@@ -1,0 +1,9 @@
+/**
+ * Compute dot product between two vectors
+ *
+ */
+this.dot(a, b) {
+    return a.reduce(function(dot, ai, i) {
+        return dot + {% if expr is defined %}{{ expr }}{% else %}(ai * b[i]){% endif %};
+    });
+}

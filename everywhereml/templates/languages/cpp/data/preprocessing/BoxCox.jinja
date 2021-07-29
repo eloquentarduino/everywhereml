@@ -1,24 +1,17 @@
-{% extends './templates/Step.jinja' %}
+{% extends './BaseTransformer.jinja' %}
 
-{% block public %}
+{% block transform %}
 
-    /**
-     * @inplace
-     */
-    bool transform(float *source) {
-        for (uint16_t i = 0; i < {{ input_dim }}; i++) {
-            float lambda = lambdas[i];
+    for (uint16_t i = 0; i < {{ input_dim }}; i++) {
+        float lambda = lambdas[i];
 
-            {% if has_zeros %}
-                float xi = source[i];
+        {% if has_zeros %}
+            float xi = source[i];
 
-                source[i] = lambda == 0 ? log(xi) : (pow(xi, lambda) - 1) / lambda;
-            {% else %}
-                source[i] = (pow(source[i], lambda) - 1) / lambda;
-            {% endif %}
-        }
-
-        return true;
+            source[i] = (lambda == 0) ? log(xi) : (pow(xi, lambda) - 1) / lambda;
+        {% else %}
+            source[i] = (pow(source[i], lambda) - 1) / lambda;
+        {% endif %}
     }
 
 {% endblock %}

@@ -1,0 +1,23 @@
+function {{ classname }}() {
+    {% block constructor %}{% endblock %}
+
+    /**
+     * input_dim  = {{ input_dim }}
+     * output_dim = {{ output_dim }}
+     * @return Array|false
+     */
+    this.transform = function(source) {
+        let $this = this;
+
+        {% block transform %}{% endblock %}
+    }
+
+    /**
+     * input_dim  = {{ input_dim }}
+     * output_dim = {{ output_dim }}
+     * @return Array|false
+     */
+    this.transformAll = function(X) {
+        return X.map(this.transform);
+    }
+};

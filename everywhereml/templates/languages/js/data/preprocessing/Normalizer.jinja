@@ -1,0 +1,23 @@
+{% extends './BaseTransformer.jinja' %}
+
+{% block transform %}
+    {% if norm == 'l1' %}
+        let norm = source.reduce(function(norm, x) {
+            return norm + Math.abs(x);
+        }, 0);
+    {% elif norm == 'l2' %}
+        let norm = source.reduce(function(norm, x) {
+            return norm + Math.pow(x, 2);
+        }, 0);
+
+        norm = Math.sqrt(norm);
+    {% elif norm == 'inf' %}
+        let norm = Math.max(...source.map(Math.abs));
+    {% else %}
+        ERROR: unknown norm {{ norm }}
+    {% endif %}
+
+    return source.map(function(x) {
+        return x / norm;
+    });
+{% endblock %}

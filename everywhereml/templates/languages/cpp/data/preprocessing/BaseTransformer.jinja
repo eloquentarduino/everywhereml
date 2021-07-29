@@ -1,10 +1,64 @@
-{% extends './templates/Step.jinja' %}
-{% set name = 'Step' %}
+#ifndef {{ uuid }}
+#define {{ uuid }}
 
-{% block public %}
-    /**
-     * Step interface
-     */
-    virtual bool transform(float *source) = 0;
+namespace EverywhereML {
+    namespace Data {
+        namespace Preprocessing {
+            {% if namespace %} namespace {{ namespace }} { {% endif %}
+                class {{ classname }} {
+                    public:
+                        {% if shared_buffer %}
+                            float *X;
+                        {% elif output_dim > input_dim %}
+                            float X[{{ output_dim }}];
+                        {% else %}
+                            float *X;
+                        {% endif %}
 
-{% endblock %}
+                        /**
+                         * Constructor
+                         * @param buffer memory to store intermediate results
+                         */
+                        {{ classname }}(float *buffer = NULL) {% block init %}{% endblock %} {
+                            {% if shared_buffer %}
+                                X = buffer;
+                            {% endif %}
+                        }
+
+
+                        /**
+                         * input_dim  = {{ input_dim }}
+                         * output_dim = {{ output_dim }}
+                         */
+                        bool transform(float *source) {
+                            {% if output_dim > input_dim %}
+                                memcpy(X, source, sizeof(float) * {{ input_dim }});
+                            {% else %}
+                                X = source;
+                            {% endif %}
+
+                            return _transform(X);
+                        }
+
+                        {% block public %}{% endblock %}
+
+                    protected:
+
+                        /**
+                         * input_dim  = {{ input_dim }}
+                         * output_dim = {{ output_dim }}
+                         */
+                        bool _transform(float *source) {
+                            {% block transform %}{% endblock %}
+
+                            return true;
+                        }
+
+                        {% block protected %}{% endblock %}
+                };
+            {% if namespace %} } {% endif %}
+        }
+    }
+}
+
+#endif

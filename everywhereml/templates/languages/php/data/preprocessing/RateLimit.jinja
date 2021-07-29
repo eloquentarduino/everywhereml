@@ -1,0 +1,27 @@
+{% extends './BaseTransformer.jinja' %}
+
+{% block attributes %}
+    /**
+     * @int
+     */
+    protected $counter;
+{% endblock %}
+
+
+{% block constructor %}
+    $this->counter = 0;
+{% endblock %}
+
+{% block transform %}
+    $passes = ($this->counter == 0);
+
+    if ((++$this->counter) == {{ once_every }}) {
+        $this->counter = 0;
+    }
+
+    if (!$passes)
+        return false;
+
+    return $source;
+
+{% endblock %}

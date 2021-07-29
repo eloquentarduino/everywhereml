@@ -1,0 +1,12 @@
+// return argmax of votes
+let classIdx = 0;
+let maxVotes = votes[0];
+
+for (let i = 1; i < {{ num_classes }}; i++) {
+    if (votes[i] > maxVotes) {
+        classIdx = i;
+        maxVotes = votes[i];
+    }
+}
+
+return classIdx;

@@ -28,7 +28,7 @@ class BoxCox(BaseTransformer):
         """
         return self.power.transform(X), y
 
-    def get_template_data(self):
+    def get_template_data(self, **kwargs):
         """
         Get template data
         :return: dict

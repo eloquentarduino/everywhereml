@@ -1,0 +1,9 @@
+/**
+ * Compute dot product
+ * @param $a array
+ * @param $b array
+ * @return float
+ */
+protected function dot(array $a, array $b) : float {
+    return array_sum(array_map(function(float $a, float $b) { return {% if expr is defined %}{{ expr }}{% else %}$a * $b{% endif %}; }, $a, $b));
+}

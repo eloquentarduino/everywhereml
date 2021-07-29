@@ -23,11 +23,11 @@ class YeoJohnson(BaseTransformer):
         """
         return self.power.transform(X), y
 
-    def get_template_data(self):
+    def get_template_data(self, **kwargs):
         """
         Get template data
         """
         return {
             'lambdas': self.power.lambdas_,
-            'has_zeros': len([l for l in self.power.lambdas_ if l == 0])
+            'has_zeros': any([l for l in self.power.lambdas_ if abs(l) < 1e-8]),
         }

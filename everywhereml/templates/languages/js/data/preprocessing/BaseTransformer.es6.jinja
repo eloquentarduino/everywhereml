@@ -1,0 +1,28 @@
+module.exports = class {{ classname }} {
+    /**
+     * Constructor
+     */
+     constructor() {
+        {% block constructor %}{% endblock %}
+     }
+
+    /**
+     * input_dim  = {{ input_dim }}
+     * output_dim = {{ output_dim }}
+     * @return Array|false
+     */
+    transform(source) {
+        const $this = this;
+
+        {% block transform %}{% endblock %}
+    }
+
+    /**
+     * input_dim  = {{ input_dim }}
+     * output_dim = {{ output_dim }}
+     * @return Array|false
+     */
+    transformAll(X) {
+        return X.map(this.transform);
+    }
+}

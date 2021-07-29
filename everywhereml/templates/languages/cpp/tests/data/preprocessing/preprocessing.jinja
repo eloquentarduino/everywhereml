@@ -1,0 +1,38 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <iostream>
+#include "transformer.h"
+
+using namespace std;
+
+
+void print_array(float *array) {
+    cout << "[";
+
+    for (int i = 0; i < {{ Xt[0] | length }}; i++) {
+        cout << array[i];
+
+        if (i != {{ Xt[0] | length }} - 1)
+            cout << ",";
+    }
+
+    cout << "]" << endl;
+}
+
+
+int main() {
+    EverywhereML::Data::Preprocessing::Transformer transformer;
+    float X[{{ X | shape }}] = {{ X | to_array }};
+
+    cout << "[" << endl;
+
+    for (int i = 0; i < {{ X | length }}; i++) {
+        if (transformer.transform(X[i])) {
+            print_array(transformer.X);
+        }
+    }
+
+    cout << "]" << endl;
+
+    return 0;
+}

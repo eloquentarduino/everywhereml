@@ -1,0 +1,14 @@
+{% extends './BaseTransformer.jinja' %}
+
+{% block transform %}
+    $diffs = [];
+
+    for ($i = 0; $i < {{ input_dim - 1 }}; $i++) {
+        for ($j = $i + 1; $j < {{ input_dim }}; $j++) {
+            array_push($diffs, $source[$i] - $source[$j]);
+        }
+    }
+
+    return array_merge($source, $diffs);
+
+{% endblock %}

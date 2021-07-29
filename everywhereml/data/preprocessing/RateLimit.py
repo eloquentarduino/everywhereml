@@ -27,7 +27,7 @@ class RateLimit(BaseTransformer):
         """
         return X[::self.once_every], y[::self.once_every]
 
-    def get_template_data(self):
+    def get_template_data(self, **kwargs):
         """
         Get template data
         """

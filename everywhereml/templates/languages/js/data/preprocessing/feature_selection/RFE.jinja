@@ -1,0 +1,13 @@
+{% extends '../BaseTransformer.jinja' %}
+
+{% block constructor %}
+    this.idx = {{ idx | to_array(precision=0) }}
+{% endblock %}
+
+
+{% block transform %}
+    return $this.idx.map(function(idx) {
+        return source[idx];
+    });
+
+{% endblock %}

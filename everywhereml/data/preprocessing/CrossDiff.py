@@ -22,6 +22,6 @@ class CrossDiff(BaseTransformer):
         """
         for i in range(self.input_dim - 1):
             for j in range(i + 1, self.input_dim):
-                X = np.hstack((X, (X[:, j] - X[:, i]).reshape((-1, 1))))
+                X = np.hstack((X, (X[:, i] - X[:, j]).reshape((-1, 1))))
 
         return X, y

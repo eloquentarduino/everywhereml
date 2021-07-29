@@ -1,0 +1,13 @@
+{% extends '../BaseTransformer.jinja' %}
+
+{% block transform %}
+    for (int i = 0; i < {{ k }}; i++) {
+        source[i] = source[idx[i]];
+    }
+
+{% endblock %}
+
+{% block protected %}
+    uint16_t idx[{{ idx | length }}] = {{ idx | to_array(precision=0) }};
+
+{% endblock %}

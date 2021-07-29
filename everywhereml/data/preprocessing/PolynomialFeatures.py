@@ -27,7 +27,7 @@ class PolynomialFeatures(BaseTransformer):
         # skip initial 1
         return Poly(2, interaction_only=self.interaction_only).fit_transform(X)[:, 1:], y
 
-    def get_template_data(self):
+    def get_template_data(self, **kwargs):
         """
         Get template data
         """

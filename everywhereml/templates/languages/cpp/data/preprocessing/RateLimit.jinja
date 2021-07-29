@@ -1,25 +1,23 @@
-{% extends './templates/Step.jinja' %}
+{% extends './BaseTransformer.jinja' %}
 
-{% block public %}
+{% block init %}
+    : counter(0)
 
-    /**
-     *
-     */
-    bool transform(float *source) {
-        counter += 1;
+{% endblock %}
 
-        if (counter == {{ skip + 1 }}) {
-            counter = 0;
+{% block transform %}
+    bool passes = (counter == 0);
 
-            return true;
-        }
-
-        return false;
+    if ((++counter) == {{ once_every }}) {
+        counter = 0;
     }
+
+    if (!passes)
+        return false;
 
 {% endblock %}
 
 {% block protected %}
-    uint16_t counter = 0;
+    uint16_t counter;
 
 {% endblock %}

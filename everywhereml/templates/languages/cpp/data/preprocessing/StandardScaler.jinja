@@ -1,20 +1,13 @@
-{% extends './templates/Step.jinja' %}
+{% extends './BaseTransformer.jinja' %}
 
-{% block public %}
+{% block transform %}
 
-    /**
-     * @inplace
-     */
-    bool transform(float *source) {
-        for (uint16_t i = 0; i < {{ input_dim }}; i++) {
-            {% if num_features == 0 %}
-               source[i] = (source[i] - {{ mean }}) * {{ inv_std }};
-            {% else %}
-                source[i] = (source[i] - mean[i % {{ num_features }}]) * invStd[i % {{ num_features }}];
-            {% endif %}
-        }
-
-        return true;
+    for (uint16_t i = 0; i < {{ input_dim }}; i++) {
+        {% if num_features == 0 %}
+           source[i] = (source[i] - {{ mean }}) * {{ inv_std }};
+        {% else %}
+            source[i] = (source[i] - mean[i % {{ num_features }}]) * invStd[i % {{ num_features }}];
+        {% endif %}
     }
 
 {% endblock %}

@@ -1,0 +1,19 @@
+{% extends './BaseTransformer.jinja' %}
+
+{% block constructor %}
+    this.lambdas = {{ lambdas | to_array }};
+{% endblock %}
+
+{% block transform %}
+    return source.map(function(x, i) {
+        let lambda = $this.lambdas[i];
+
+        if (x > 0) {
+            return Math.abs(lambda) < 1e-10 ? Math.log(1 + x) : (Math.pow(x + 1, lambda) - 1) / lambda;
+        }
+
+        return Math.abs(lambda - 2) < 1e-10 ? -Math.log(1 - x) : -(Math.pow(-x + 1, 2 - lambda) - 1) / (2 - lambda);
+
+    });
+
+{% endblock %}

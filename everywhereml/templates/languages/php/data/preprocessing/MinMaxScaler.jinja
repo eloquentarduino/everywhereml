@@ -1,0 +1,32 @@
+{% extends './BaseTransformer.jinja' %}
+
+{% block attributes %}
+    /**
+     * @array min values
+     */
+    protected $m;
+
+    /**
+     * @array inverse of ranges
+     */
+    protected $invRange;
+{% endblock %}
+
+
+{% block constructor %}
+    $this->m = {{ min | to_array }};
+    $this->invRange = {{ inv_range | to_array }};
+{% endblock %}
+
+
+{% block transform %}
+    {% if num_features == 0 %}
+        return array_map(function(float $x) {
+            return ($x - {{ min }}) * {{ inv_range }};
+        }, $source);
+    {% else %}
+        return array_map(function(float $x, int $i) {
+            return ($x - $this->m[$i % {{ num_features }}]) * $this->invRange[$i % {{ num_features }}];
+        }, $source);
+    {% endif %}
+{% endblock %}

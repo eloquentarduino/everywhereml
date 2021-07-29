@@ -1,0 +1,22 @@
+<?php
+
+require "transformer.php";
+
+
+$transformer = new Transformer();
+$X = {{ X | to_array }};
+
+// ugly way of avoiding memory overflow
+print("[");
+
+foreach ($X as $x) {
+    $xt = $transformer->transform($x);
+
+    if (!is_array($xt))
+        continue;
+
+    print(json_encode($xt));
+    print(",");
+}
+
+print("]");

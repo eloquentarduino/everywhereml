@@ -1,0 +1,20 @@
+const Transformer = require('./transformer')
+
+
+transformer = new Transformer();
+X = {{ X | to_array }};
+
+// ugly way of avoiding memory overflow
+console.log("[");
+
+X.forEach(function(x) {
+    xt = transformer.transform(x);
+
+    if (!xt || !xt.length)
+        return;
+
+    console.log(JSON.stringify(xt));
+    console.log(",");
+});
+
+console.log("]");
