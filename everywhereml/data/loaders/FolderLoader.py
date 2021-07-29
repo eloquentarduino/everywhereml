@@ -13,11 +13,12 @@ class FolderLoader(BaseLoader):
     """
     Load data from each file inside a folder
     """
-    def __init__(self, folder, test=None, max_depth=0, classmap=None, target_column=None, **kwargs):
+    def __init__(self, folder, test=r'\.(txt|csv|tsv|TXT|CSV|TSV)$', ignore=None, max_depth=0, classmap=None, target_column=None, **kwargs):
         """
         Constructor
         :param folder: str path to the folder to load files from
-        :param test: str|callable filter for filenames (regex or callable)
+        :param test: str|callable only load files that pass the test (regex or callable)
+        :param ignore: str|callable ignore files that pass the test (regex or callable)
         :param target_column: None|int|str if None, target is inferred from filename
         :param max_depth: int how many level to traverse the folder tree
         :param classmap: dict a mapping from class indices to class names
@@ -26,7 +27,7 @@ class FolderLoader(BaseLoader):
         assert os.path.isdir(folder), '%s MUST be a folder' % folder
 
         self.root = os.path.abspath(folder)
-        self.files = sorted(list(self.walk(self.root, max_depth, test=test)))
+        self.files = sorted(list(self.walk(self.root, max_depth, test=test, ignore=ignore)))
 
         assert len(self.files) > 0, 'no file to read'
 
@@ -44,12 +45,13 @@ class FolderLoader(BaseLoader):
 
         self.dataset = Dataset(X, y, columns=datasets[0].columns, classmap=classmap)
 
-    def walk(self, folder, max_depth=-1, test=None, root=None):
+    def walk(self, folder, max_depth=-1, test=None, ignore=None, root=None):
         """
         Recursively walk a directory
         :param folder: str
         :param max_depth: int
         :param test: callable|regex
+        :param ignore: callable|regex
         :param root: str
         :return: Iterator
         """
@@ -58,29 +60,42 @@ class FolderLoader(BaseLoader):
         if root is None:
             root = folder
 
+        # make test a function
         if isinstance(test, str):
             # filter is a regex
-            regex = re.compile(test)
+            test_regex = re.compile(test)
 
             def test(filename):
-                return regex.search(filename) is not None
+                return test_regex.search(filename) is not None
         elif not callable(test):
             # dummy filter
             def test(filename):
                 return True
 
+        # make ignore a function
+        if isinstance(ignore, str):
+            # ignore is a regex
+            ignore_regex = re.compile(ignore)
+
+            def ignore(filename):
+                return ignore_regex.search(filename) is not None
+        elif not callable(ignore):
+            # dummy ignore
+            def test(filename):
+                return False
+
         for entry in scandir(folder):
             if entry.is_dir():
                 queue.append(entry)
             else:
-                if test(entry.path[len(root) + 1:]):
+                if test(entry.path[len(root) + 1:]) and not ignore(entry.path[len(root) + 1:]):
                     yield entry.path
 
         if max_depth == 0:
             return
 
         for q in queue:
-            for file in self.walk(q, max_depth=max_depth-1, test=test, root=root):
+            for file in self.walk(q, max_depth=max_depth-1, test=test, ignore=ignore, root=root):
                 yield file
 
     def to_class_name(self, filename):
