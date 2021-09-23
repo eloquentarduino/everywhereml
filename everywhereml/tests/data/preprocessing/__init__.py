@@ -6,3 +6,5 @@ from everywhereml.tests.data.preprocessing.PolynomailFeaturesTest import *
 from everywhereml.tests.data.preprocessing.RateLimitTest import *
 from everywhereml.tests.data.preprocessing.StandardScalerTest import *
 from everywhereml.tests.data.preprocessing.YeoJohnsonTest import *
+
+from everywhereml.tests.data.preprocessing.feature_selection import *

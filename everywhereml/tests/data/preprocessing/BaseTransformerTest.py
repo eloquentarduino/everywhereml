@@ -1,8 +1,8 @@
-import os.path
-import numpy as np
 from unittest import TestCase
-from numpy.testing import assert_array_almost_equal, assert_allclose
+
+from numpy.testing import assert_allclose
 from sklearn.datasets import *
+
 from everywhereml.data import Dataset
 from everywhereml.templates import Jinja
 from everywhereml.tests.runtime.CppRuntime import CppRuntime
@@ -31,7 +31,7 @@ class BaseTransformerTest(TestCase):
                     continue
 
                 for runtime in [self.cpp, self.js, self.js_es6, self.php]:
-                    output = runtime(transformer, X, Xt).output(tmp_folder='/Users/simone/Desktop/tmp')
+                    output = runtime(transformer, X, Xt).output()
                     assert_allclose(Xt, output, rtol=1e-2)
 
     def get_instances(self, dataset):

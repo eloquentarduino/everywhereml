@@ -10,6 +10,7 @@
             {% for start, end in chunk_indices(theta[class_idx] | length, chunk_size) %}
                 // chunk from {{ start }} to {{ end }}
                 votes[{{ class_idx }}] -= 0.5 * sum(x + k, {{ end - start }}, {% for i, (ti, si) in enumerate(zip(theta[class_idx][start:end], sigma_inv[class_idx][start:end])) %}{% if i > 0 %},{% endif %} {{ ti | round(9) }}f, {{ si | round(9) }}f{% endfor %});
+                k += {{ chunk_size }};
             {% endfor %}
         }
     {% endfor %}

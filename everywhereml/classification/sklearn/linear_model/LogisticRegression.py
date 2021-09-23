@@ -13,6 +13,7 @@ class LogisticRegression(SklearnBaseClassifier, SklearnClassifier):
         """
         return {
             'weights': self.coef_,
-            'intercept': self.intercept_,
-            'classes': self.classes_
+            'intercepts': self.intercept_,
+            'classes': self.classes_,
+            'inverted': len(self.classes_) == 2
         }

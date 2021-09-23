@@ -42,7 +42,7 @@ class RFE(BaseTransformer):
         """
         return X[:, self.idx], y
 
-    def get_template_data(self):
+    def get_template_data(self, **kwargs):
         """
         Get template data
         """

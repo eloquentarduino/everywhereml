@@ -45,11 +45,14 @@ class BaseRuntime:
                 commands = [commands]
 
             for cmd in commands:
-                output = check_output(cmd, cwd=folder).decode('utf-8')
+                output = check_output(cmd, cwd=folder).decode('utf-8').strip()
 
             # format output as json
+            if not output.startswith('['):
+                output = '[%s]' % output
+
             output = re.sub(r'\]\s*\[', '],[', output)
-            output = re.sub(r'\]\s*,\s*\]', ']]', output)
+            output = re.sub(r',\s*\]', ']', output)
 
             try:
                 return np.asarray(json.loads(output), dtype=np.float)

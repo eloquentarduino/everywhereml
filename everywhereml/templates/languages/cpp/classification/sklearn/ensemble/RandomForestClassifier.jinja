@@ -4,7 +4,7 @@
     uint16_t votes[{{ num_classes }}] = { 0 };
 
     {% for k, tree in enumerate(trees) %}
-        votes[tree{{ k }}()] += 1;
+        votes[tree{{ k }}(x)] += 1;
     {% endfor %}
 
     {% include '../../partials/vote.jinja' %}
@@ -18,7 +18,7 @@
              * Random forest's tree #{{ k }}
              * @return predicted class
              */
-            uint16_t tree{{ k }}() {
+            uint16_t tree{{ k }}(float *x) {
                 {% include '../tree/tree.jinja' %}
             }
         {% endwith %}

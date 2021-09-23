@@ -5,12 +5,13 @@ class Dataset:
     """
     Dataset abstraction
     """
-    def __init__(self, X, y, columns=None, classmap=None):
+    def __init__(self, X, y, columns=None, classmap=None, name=''):
         """
         Constructor
         :param X: numpy.ndarray
         :param y: numpy.ndarray
         :param columns: list|None column names
+        :param name: str descriptive name of dataset
         """
         assert X is not None and y is not None, 'X and y CANNOT be None'
         assert len(X) == len(y), 'X and y MUST have the same length (%d vs %d found)' % (len(X), len(y))
@@ -23,6 +24,7 @@ class Dataset:
         self.y = np.asarray(y, dtype=np.uint8)
         self.columns = columns
         self.classmap = classmap
+        self.name = name
 
     @property
     def num_samples(self):

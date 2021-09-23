@@ -35,7 +35,7 @@ class BaseTransformer(IsPortableMixin):
         self._fit(X, y)
 
         # transform one sample to detect output shape
-        self.transform(X[:1], y[:1])
+        self.transform(X[:1], y[:1] if y is not None else None)
 
         return self
 

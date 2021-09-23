@@ -103,4 +103,13 @@
             return kernel;
         {% endif %}
     }
+
+    /**
+     * Sigmoid of x
+     */
+    float sigmoid(float x) {
+        float t = pow(2.7182818284f, x);
+
+        return t / (t + 1);
+    }
 {% endblock %}

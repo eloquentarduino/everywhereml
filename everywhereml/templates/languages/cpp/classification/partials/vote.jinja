@@ -9,4 +9,8 @@ for (uint8_t i = 1; i < {{ num_classes }}; i++) {
     }
 }
 
+{% if inverted %}
+return 1 - classIdx;
+{% else %}
 return classIdx;
+{% endif %}

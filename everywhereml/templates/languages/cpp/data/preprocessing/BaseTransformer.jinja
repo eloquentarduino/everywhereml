@@ -5,6 +5,9 @@ namespace EverywhereML {
     namespace Data {
         namespace Preprocessing {
             {% if namespace %} namespace {{ namespace }} { {% endif %}
+                /**
+                 * Source class: {{ source_class }}
+                 */
                 class {{ classname }} {
                     public:
                         {% if shared_buffer %}

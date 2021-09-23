@@ -1,0 +1,16 @@
+#include <iostream>
+#include "classifier.h"
+
+using namespace std;
+
+
+int main() {
+    EverywhereML::Classification::Classifier classifier;
+    float X[{{ X | shape }}] = {{ X | to_array }};
+
+    for (int i = 0; i < {{ X | length }}; i++) {
+        cout << classifier.predict(X[i]) << ", ";
+    }
+
+    return 0;
+}

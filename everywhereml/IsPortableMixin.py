@@ -27,7 +27,8 @@ class IsPortableMixin:
             template_data.setdefault(k, v)
 
         # ALWAYS inject these values
-        template_data['uuid'] = 'UUID%d' % id(self)
+        template_data.update(uuid='UUID%d' % id(self))
+        template_data.update(source_class=self.__module__.__str__())
 
         ported = Jinja('', language=language, dialect=kwargs.get('dialect', None)).render(template_name, template_data)
 

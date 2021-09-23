@@ -1,0 +1,15 @@
+#include <iostream>
+
+
+void print_array(float *array, unsigned int size) {
+    cout << "[";
+
+    for (int i = 0; i < size; i++) {
+        cout << array[i];
+
+        if (i != size - 1)
+            cout << ",";
+    }
+
+    cout << "]" << endl;
+}

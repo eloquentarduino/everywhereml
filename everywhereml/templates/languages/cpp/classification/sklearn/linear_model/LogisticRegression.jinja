@@ -4,7 +4,7 @@
     float votes[{{ classes | length }}] = { 0.0f };
 
     {% for i, w in enumerate(weights) %}
-        votes[{{ i }}] = dot(x, {{ w | to_array(with_parentheses=False) }});
+        votes[{{ i }}] = dot(x, {{ num_inputs }}, {{ w | to_array(with_parentheses=False) }}) + {{ intercepts[i] }};
     {% endfor %}
 
     {% include '../../partials/vote.jinja' %}

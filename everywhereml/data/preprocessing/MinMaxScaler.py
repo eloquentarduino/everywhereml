@@ -53,7 +53,7 @@ class MinMaxScaler(BaseTransformer):
         :return: tuple
         """
         assert self.min is not None and self.max is not None, 'Unfitted'
-        assert self.min != self.max, 'Bad fitting ({} - {})'.format(self.min, self.max)
+        assert np.asarray(self.min - self.max).sum() != 0, 'Bad fitting ({} - {})'.format(self.min, self.max)
 
         return (X - self.min) / (self.max - self.min), y
 

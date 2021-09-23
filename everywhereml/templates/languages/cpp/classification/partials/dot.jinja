@@ -1,12 +1,12 @@
 /**
  * Compute dot product
  */
-float dot(float *x, ...) {
+float dot(float *x, unsigned int num_args, ...) {
     va_list w;
-    va_start(w, {{ num_inputs }});
+    va_start(w, num_args);
     float dot = 0.0f;
 
-    for (uint16_t i = 0; i < {{ num_inputs }}; i++) {
+    for (uint16_t i = 0; i < num_args; i++) {
         const float wi = va_arg(w, double);
 
         {% if expr is defined %}
