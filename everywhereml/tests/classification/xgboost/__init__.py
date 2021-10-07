@@ -1,0 +1,1 @@
+from everywhereml.tests.classification.xgboost.XGBClassifierTest import XGBClassifierTest

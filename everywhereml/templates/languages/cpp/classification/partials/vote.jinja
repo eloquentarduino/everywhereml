@@ -1,16 +1,20 @@
-// return argmax of votes
-uint8_t classIdx = 0;
-float maxVotes = votes[0];
+{% if num_classes == 2 and makes_binary_complement_decision %}
+    return votes[0] > 0 ? 0 : 1;
 
-for (uint8_t i = 1; i < {{ num_classes }}; i++) {
-    if (votes[i] > maxVotes) {
-        classIdx = i;
-        maxVotes = votes[i];
-    }
-}
+{% elif num_classes == 2 and makes_binary_decision %}
+    return votes[0] > 0 ? 1 : 0;
 
-{% if inverted %}
-return 1 - classIdx;
 {% else %}
-return classIdx;
+    // return argmax of votes
+    uint8_t classIdx = 0;
+    float maxVotes = votes[0];
+
+    for (uint8_t i = 1; i < {{ num_classes }}; i++) {
+        if (votes[i] > maxVotes) {
+            classIdx = i;
+            maxVotes = votes[i];
+        }
+    }
+
+    return classIdx;
 {% endif %}

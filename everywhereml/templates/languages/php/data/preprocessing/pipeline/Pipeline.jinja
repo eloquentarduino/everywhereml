@@ -1,0 +1,46 @@
+{% extends '../BaseTransformer.jinja' %}
+
+{% block before_class %}
+
+    /****************************************
+     *********** START OF STEPS *************
+     ****************************************/
+    {% for i, (name, step) in enumerate(steps) %}
+        {{ step.port(classname=name, embedded=True, language=language) }}
+    {% endfor %}
+    /****************************************
+     ************ END OF STEPS **************
+     ****************************************/
+
+{% endblock %}
+
+{% block attributes %}
+
+    /**
+     * @var array
+     */
+     protected $steps;
+
+{% endblock %}
+
+{% block constructor %}
+
+    $this->steps = [
+        {% for i, (name, step) in enumerate(steps) %}
+            {% if i > 0 %},{% endif %} new {{ name }}()
+        {% endfor %}
+    ];
+
+{% endblock %}
+
+{% block transform %}
+
+    return array_reduce($this->steps, function($X, $step) {
+        if ($X === false) {
+            return false;
+        }
+
+        return $step->transform($X);
+    }, $source);
+
+{% endblock %}

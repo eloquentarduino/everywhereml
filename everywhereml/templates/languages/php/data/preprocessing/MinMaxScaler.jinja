@@ -21,11 +21,11 @@
 
 {% block transform %}
     {% if num_features == 0 %}
-        return array_map(function(float $x) {
+        return $this->map(function(float $x) {
             return ($x - {{ min }}) * {{ inv_range }};
         }, $source);
     {% else %}
-        return array_map(function(float $x, int $i) {
+        return $this->map(function(float $x, int $i) {
             return ($x - $this->m[$i % {{ num_features }}]) * $this->invRange[$i % {{ num_features }}];
         }, $source);
     {% endif %}

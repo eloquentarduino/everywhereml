@@ -3,7 +3,8 @@ __pycache__
 *.py[cod]
 .cache
 .ipynb_checkpoints
-everywhereml/project
-serve.py
-test
-notebook.html
+./enumerate_packages.py
+./enumerate_templates.py
+./publish
+./setup_template.py
+./test

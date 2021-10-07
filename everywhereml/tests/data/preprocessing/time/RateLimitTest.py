@@ -1,4 +1,4 @@
-from everywhereml.data.preprocessing import RateLimit
+from everywhereml.data.preprocessing.time import RateLimit
 from everywhereml.tests.data.preprocessing.BaseTransformerTest import BaseTransformerTest
 
 

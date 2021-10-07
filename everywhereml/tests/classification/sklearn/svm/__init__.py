@@ -1,1 +1,1 @@
-from everywhereml.tests.classification.sklearn.svm.SVCTest import SVCTest
+#from everywhereml.tests.classification.sklearn.svm.SVCTest import SVCTest

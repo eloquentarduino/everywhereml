@@ -21,10 +21,17 @@
     {% elif num_classes == 2 %}
         float decision =
             {{ intercepts[0] | round(9) }}f
-            - ({% for i in range(0, support_vectors[0] | length) %} + kernels[{{ i }}] * {{ coefs[0][i] | round(9) }}f{% endfor %});
-            - ({% for i in range(support_vectors[0] | length, support_vectors[0] | length + support_vectors[1] | length) %} + kernels[{{ i }}] * {{ coefs[0][i] | round(9) }}f{% endfor %});
+            + {% for i, coef in enumerate(coefs[0]) %}
+                {% if coef == 1 %}
+                    + kernels[{{ i }}]
+                {% elif coef == -1 %}
+                    - kernels[{{ i }}]
+                {% elif coef != 0 %}
+                    + kernels[{{ i }}] * {{ coef | round(9) }}f
+                {% endif %}
+            {% endfor %};
 
-        return decision > 0 ? 0 : 1;
+        return decision > 0 ? 1 : 0;
     {% else %}
         {% set helpers = {'ii': 0} %}
 
@@ -77,9 +84,9 @@
      * Kernel degree: {{ kernel['degree'] }}
      */
     float compute_kernel(float *x, int num_inputs, ...) {
+        float kernel = 0.0f;
         va_list w;
         va_start(w, num_inputs);
-        float kernel = 0.0;
 
         for (uint16_t i = 0; i < {{ num_inputs }}; i++) {
             const float wi = va_arg(w, double);

@@ -1,3 +1,4 @@
+import numpy as np
 from everywhereml.templates import Jinja
 
 
@@ -17,18 +18,27 @@ class IsPortableMixin:
         template_data.update(self.get_template_data_for_language(language))
         template_data.update(data or {})
 
+        # kwargs first
+        for k, v in kwargs.items():
+            template_data.setdefault(k, v)
+
+        # then language-specific data
         for k, v in self.get_default_template_data_for_language(language).items():
             template_data.setdefault(k, v)
 
+        # then default data
         for k, v in self.get_default_template_data().items():
-            template_data.setdefault(k, v)
-
-        for k, v in kwargs.items():
             template_data.setdefault(k, v)
 
         # ALWAYS inject these values
         template_data.update(uuid='UUID%d' % id(self))
         template_data.update(source_class=self.__module__.__str__())
+        template_data.update(language=language)
+
+        # replace NaNs with 0 and inf with a large number
+        for k, v in template_data.items():
+            if isinstance(v, np.ndarray):
+                template_data.update(**{k: np.nan_to_num(v)})
 
         ported = Jinja('', language=language, dialect=kwargs.get('dialect', None)).render(template_name, template_data)
 

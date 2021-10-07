@@ -1,32 +1,50 @@
 #ifndef {{ uuid }}
 #define {{ uuid }}
 
+{% if not embedded %}
+
 namespace EverywhereML {
     namespace Data {
         namespace Preprocessing {
             {% if namespace %} namespace {{ namespace }} { {% endif %}
+
+{% endif %}
+
+                {% block before_class %}{% endblock %}
+
                 /**
                  * Source class: {{ source_class }}
                  */
                 class {{ classname }} {
                     public:
+                        /**
+                         * Transformed vector
+                         * If the transformer is in a pipeline, we don't need to allocate room
+                         * for this vector
+                         */
                         {% if shared_buffer %}
                             float *X;
                         {% elif output_dim > input_dim %}
                             float X[{{ output_dim }}];
+                        {% elif buffer_size > input_dim %}
+                            float X[{{ buffer_size }}];
                         {% else %}
                             float *X;
                         {% endif %}
 
-                        /**
-                         * Constructor
-                         * @param buffer memory to store intermediate results
-                         */
-                        {{ classname }}(float *buffer = NULL) {% block init %}{% endblock %} {
-                            {% if shared_buffer %}
-                                X = buffer;
-                            {% endif %}
-                        }
+                        {% block constructor %}
+
+                            /**
+                             * Constructor
+                             * @param buffer memory to store intermediate results
+                             */
+                            {{ classname }}(float *buffer = NULL) {% block init %}{% endblock %} {
+                                if (buffer != NULL) {
+                                    this->buffer = buffer;
+                                }
+                            }
+
+                        {% endblock %}
 
 
                         /**
@@ -34,7 +52,9 @@ namespace EverywhereML {
                          * output_dim = {{ output_dim }}
                          */
                         bool transform(float *source) {
-                            {% if output_dim > input_dim %}
+                            {% if shared_buffer %}
+                                X = source;
+                            {% elif output_dim > input_dim %}
                                 memcpy(X, source, sizeof(float) * {{ input_dim }});
                             {% else %}
                                 X = source;
@@ -48,6 +68,17 @@ namespace EverywhereML {
                     protected:
 
                         /**
+                         * Some transformers may need additional room for intermediate results
+                         * We allow for both a private or shared buffer (used in the Pipeline class)
+                         * to reduce the RAM usage to the minimum
+                         */
+                        {% if not shared_buffer and buffer_size > 0 %}
+                            float buffer[{{ buffer_size }}] = {0};
+                        {% else %}
+                            float *buffer;
+                        {% endif %}
+
+                        /**
                          * input_dim  = {{ input_dim }}
                          * output_dim = {{ output_dim }}
                          */
@@ -59,9 +90,12 @@ namespace EverywhereML {
 
                         {% block protected %}{% endblock %}
                 };
+
+{% if not embedded %}
             {% if namespace %} } {% endif %}
         }
     }
 }
+{% endif %}
 
 #endif

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><testsuite name="nosetests" tests="22" errors="0" failures="0" skip="0"><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_languages" time="1.984"><system-err><![CDATA[/Users/simone/PycharmProjects/everywhereml/venv/lib/python3.7/site-packages/scipy/stats/morestats.py:908: RuntimeWarning: divide by zero encountered in log
+  return (lmb - 1) * np.sum(logdata, axis=0) - N/2 * np.log(variance)
+]]></system-err></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_languages" time="21.873"></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_custom_columns" time="0.025"></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_default_columns" time="0.003"></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_no_columns" time="0.006"></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_no_target_column" time="0.002"></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_skiprows" time="0.004"></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_classmap" time="0.013"></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_columns" time="0.009"></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_direct_children" time="0.010"></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_direct_children_infer_target" time="0.008"></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_recursive_infer_target" time="0.015"></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_walk" time="0.030"></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_languages" time="9.582"><system-err><![CDATA[/Users/simone/PycharmProjects/everywhereml/everywhereml/data/preprocessing/MinMaxScaler.py:58: RuntimeWarning: invalid value encountered in true_divide
+  return (X - self.min) / (self.max - self.min), y
+/Users/simone/PycharmProjects/everywhereml/everywhereml/data/preprocessing/MinMaxScaler.py:68: RuntimeWarning: divide by zero encountered in true_divide
+  'inv_range': 1 / (self.max - self.min)[:self.num_features] if self.num_features > 0 else 1 / (self.max - self.min),
+/Users/simone/PycharmProjects/everywhereml/everywhereml/data/preprocessing/MinMaxScaler.py:68: RuntimeWarning: divide by zero encountered in true_divide
+  'inv_range': 1 / (self.max - self.min)[:self.num_features] if self.num_features > 0 else 1 / (self.max - self.min),
+/Users/simone/PycharmProjects/everywhereml/everywhereml/data/preprocessing/MinMaxScaler.py:68: RuntimeWarning: divide by zero encountered in true_divide
+  'inv_range': 1 / (self.max - self.min)[:self.num_features] if self.num_features > 0 else 1 / (self.max - self.min),
+/Users/simone/PycharmProjects/everywhereml/everywhereml/data/preprocessing/MinMaxScaler.py:68: RuntimeWarning: divide by zero encountered in true_divide
+  'inv_range': 1 / (self.max - self.min)[:self.num_features] if self.num_features > 0 else 1 / (self.max - self.min),
+/Users/simone/PycharmProjects/everywhereml/everywhereml/data/preprocessing/MinMaxScaler.py:58: RuntimeWarning: invalid value encountered in true_divide
+  return (X - self.min) / (self.max - self.min), y
+/Users/simone/PycharmProjects/everywhereml/everywhereml/data/preprocessing/MinMaxScaler.py:68: RuntimeWarning: divide by zero encountered in true_divide
+  'inv_range': 1 / (self.max - self.min)[:self.num_features] if self.num_features > 0 else 1 / (self.max - self.min),
+/Users/simone/PycharmProjects/everywhereml/everywhereml/data/preprocessing/MinMaxScaler.py:68: RuntimeWarning: divide by zero encountered in true_divide
+  'inv_range': 1 / (self.max - self.min)[:self.num_features] if self.num_features > 0 else 1 / (self.max - self.min),
+/Users/simone/PycharmProjects/everywhereml/everywhereml/data/preprocessing/MinMaxScaler.py:68: RuntimeWarning: divide by zero encountered in true_divide
+  'inv_range': 1 / (self.max - self.min)[:self.num_features] if self.num_features > 0 else 1 / (self.max - self.min),
+/Users/simone/PycharmProjects/everywhereml/everywhereml/data/preprocessing/MinMaxScaler.py:68: RuntimeWarning: divide by zero encountered in true_divide
+  'inv_range': 1 / (self.max - self.min)[:self.num_features] if self.num_features > 0 else 1 / (self.max - self.min),
+]]></system-err></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_languages" time="14.424"></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_languages" time="5.041"><system-err><![CDATA[/Users/simone/PycharmProjects/everywhereml/everywhereml/data/preprocessing/MinMaxScaler.py:58: RuntimeWarning: invalid value encountered in true_divide
+  return (X - self.min) / (self.max - self.min), y
+/Users/simone/PycharmProjects/everywhereml/everywhereml/data/preprocessing/MinMaxScaler.py:68: RuntimeWarning: divide by zero encountered in true_divide
+  'inv_range': 1 / (self.max - self.min)[:self.num_features] if self.num_features > 0 else 1 / (self.max - self.min),
+/Users/simone/PycharmProjects/everywhereml/everywhereml/data/preprocessing/MinMaxScaler.py:68: RuntimeWarning: divide by zero encountered in true_divide
+  'inv_range': 1 / (self.max - self.min)[:self.num_features] if self.num_features > 0 else 1 / (self.max - self.min),
+/Users/simone/PycharmProjects/everywhereml/everywhereml/data/preprocessing/MinMaxScaler.py:68: RuntimeWarning: divide by zero encountered in true_divide
+  'inv_range': 1 / (self.max - self.min)[:self.num_features] if self.num_features > 0 else 1 / (self.max - self.min),
+/Users/simone/PycharmProjects/everywhereml/everywhereml/data/preprocessing/MinMaxScaler.py:68: RuntimeWarning: divide by zero encountered in true_divide
+  'inv_range': 1 / (self.max - self.min)[:self.num_features] if self.num_features > 0 else 1 / (self.max - self.min),
+]]></system-err></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_languages" time="21.184"></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_languages" time="5.568"></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_languages" time="4.882"></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_languages" time="4.743"></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_languages" time="14.578"><system-err><![CDATA[/Users/simone/PycharmProjects/everywhereml/everywhereml/data/preprocessing/StandardScaler.py:60: RuntimeWarning: divide by zero encountered in true_divide
+  self.inv_std = np.where(np.abs(std) < 1e-6, 1, 1 / std)
+/Users/simone/PycharmProjects/everywhereml/everywhereml/data/preprocessing/StandardScaler.py:60: RuntimeWarning: divide by zero encountered in true_divide
+  self.inv_std = np.where(np.abs(std) < 1e-6, 1, 1 / std)
+]]></system-err></testcase><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_languages" time="5.557"><system-err><![CDATA[/Users/simone/PycharmProjects/everywhereml/venv/lib/python3.7/site-packages/sklearn/preprocessing/_data.py:3237: RuntimeWarning: divide by zero encountered in log
+  loglike = -n_samples / 2 * np.log(x_trans.var())
+/Users/simone/PycharmProjects/everywhereml/venv/lib/python3.7/site-packages/sklearn/preprocessing/_data.py:3237: RuntimeWarning: divide by zero encountered in log
+  loglike = -n_samples / 2 * np.log(x_trans.var())
+/Users/simone/PycharmProjects/everywhereml/venv/lib/python3.7/site-packages/sklearn/preprocessing/_data.py:3237: RuntimeWarning: divide by zero encountered in log
+  loglike = -n_samples / 2 * np.log(x_trans.var())
+]]></system-err></testcase></testsuite>

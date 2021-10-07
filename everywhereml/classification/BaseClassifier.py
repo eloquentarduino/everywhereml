@@ -1,8 +1,10 @@
+from cached_property import cached_property
 from sklearn.model_selection import KFold
 from everywhereml.IsPortableMixin import IsPortableMixin
 from everywhereml.classification.utils import to_Xy
-from everywhereml.templates import Jinja
 from everywhereml.data.plot import plot_confusion_matrix
+from everywhereml.classification.MakesBinaryDecisionMixin import MakesBinaryDecisionMixin
+from everywhereml.classification.MakesBinaryComplementDecisionMixin import MakesBinaryComplementDecisionMixin
 
 
 class BaseClassifier(IsPortableMixin):
@@ -29,17 +31,17 @@ class BaseClassifier(IsPortableMixin):
 
         return len(set(self.y_train))
 
-    @property
+    @cached_property
     def package_name(self):
         """
         Get base package name
-        :return:
+        :return: str
         """
         package_name = self.__module__.__str__().replace('everywhereml.classification.', '').split('.')[0]
 
         return package_name[0].upper() + package_name[1:]
 
-    @property
+    @cached_property
     def classname(self):
         """
         Get class name
@@ -49,7 +51,7 @@ class BaseClassifier(IsPortableMixin):
 
         return classname[0].upper() + classname[1:]
 
-    @property
+    @cached_property
     def packages(self):
         """
         Get package names
@@ -58,6 +60,15 @@ class BaseClassifier(IsPortableMixin):
         packages = self.__module__.__str__().replace('everywhereml.classification.', '').split('.')[:-1]
 
         return [package[0].upper() + package[1:] for package in packages]
+
+    @property
+    def binary_complement(self):
+        """
+        Some implementations output swapped labels for binary classification
+        If this property is True, fix the return value in the templates
+        :return: bool
+        """
+        return False
 
     def clone(self):
         """
@@ -147,18 +158,20 @@ class BaseClassifier(IsPortableMixin):
 
     def get_default_template_data(self):
         """
-        Get default data for template
+        Get default data for templates
         :return: dict
         """
         return {
             'num_inputs': self.num_inputs,
             'num_classes': self.num_classes,
-            'package_name': self.package_name
+            'package_name': self.package_name,
+            'makes_binary_decision': isinstance(self, MakesBinaryDecisionMixin),
+            'makes_binary_complement_decision': isinstance(self, MakesBinaryComplementDecisionMixin)
         }
 
     def get_default_template_data_php(self, **kwargs):
         """
-
+        Get default data for PHP templates
         :param kwargs:
         :return:
         """

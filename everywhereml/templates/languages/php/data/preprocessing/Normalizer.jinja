@@ -17,7 +17,7 @@
         ERROR: unknown norm {{ norm }}
     {% endif %}
 
-    return array_map(function($x) use ($norm) {
+    return $this->map(function(float $x) use ($norm) {
         return $x / $norm;
     }, $source);
 {% endblock %}

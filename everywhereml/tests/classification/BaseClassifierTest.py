@@ -1,9 +1,6 @@
-import os.path
-import numpy as np
-from subprocess import check_call, check_output
 from unittest import TestCase
 
-from numpy.testing import assert_array_equal
+import numpy as np
 from sklearn.datasets import *
 
 from everywhereml.data import Dataset
@@ -13,20 +10,33 @@ from everywhereml.tests.runtime.CppRuntime import CppRuntime
 
 class BaseClassifierTest(TestCase):
     def setUp(self):
+        """
+        Load a few sample datasets to test
+        :return:
+        """
         self.datasets = [
+            Dataset(*load_breast_cancer(return_X_y=True), name='Cancer'),
             Dataset(*load_iris(return_X_y=True), name='Iris'),
             Dataset(*load_wine(return_X_y=True), name='Wine'),
-            Dataset(*load_breast_cancer(return_X_y=True), name='Cancer'),
             Dataset(*load_digits(return_X_y=True), name='Digits'),
         ]
 
     def get_instances(self, dataset):
+        """
+        Each subclass MUST supply a list of classifiers to test
+        :param dataset:
+        :return:
+        """
         raise NotImplementedError('%s.get_instances()' % type(self))
 
     def test_languages(self):
+        """
+        Test each dataset with each classifier on each language
+        :return:
+        """
         for dataset in self.datasets:
             for clf in self.get_instances(dataset):
-                print(dataset.name, clf)
+                print('%s dataset, ' % dataset.name, clf)
                 clf.fit(dataset.X, dataset.y)
                 y_pred = clf.predict(dataset.X).astype(int)
 
@@ -42,15 +52,14 @@ class BaseClassifierTest(TestCase):
         :return:
         """
         cpp = CppRuntime()
-        main = Jinja('tests', language='cpp').render('classification/sklearn.jinja', {
-            'X': X,
-        })
+        main = Jinja('tests', language='cpp').render('classification/sklearn.jinja', {'X': X})
+
         cpp.add_file('main.cpp', main)
         cpp.add_file('classifier.h', clf.port(classname='Classifier', language='cpp'))
 
         return cpp
 
-    def assert_array_equal(self, y_pred, output, allowed_mismatches=1):
+    def assert_array_equal(self, y_pred, output, allowed_mismatches=0.01):
         """
         Assert that two array matches allowing a certain degree of tolerance
         :param y_pred:
@@ -61,7 +70,18 @@ class BaseClassifierTest(TestCase):
         mismatches = (y_pred.astype(int) != output.astype(int))
         mismatches_count = np.sum(mismatches)
 
-        self.assertLessEqual(mismatches_count, allowed_mismatches, "%d mismatches (%d allowed)" % (mismatches_count, allowed_mismatches))
+        if allowed_mismatches < 1:
+            # interpret as percent of total samples
+            allowed_mismatches = len(y_pred) * allowed_mismatches
+
+        self.assertLessEqual(mismatches_count,
+                             allowed_mismatches,
+                             "%d/%d mismatches (%d allowed): %s vs %s" % (
+                                 mismatches_count,
+                                 len(y_pred),
+                                 allowed_mismatches,
+                                 str(y_pred[mismatches][:20]),
+                                 str(output[mismatches][:20])))
 
         if mismatches_count <= allowed_mismatches:
             return

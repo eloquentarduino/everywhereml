@@ -1,0 +1,33 @@
+{% extends '../BaseTransformer.jinja' %}
+
+{% block constructor %}
+
+    /****************************************
+     *********** START OF STEPS *************
+     ****************************************/
+    {% for i, (name, step) in enumerate(steps) %}
+        {{ step.port(classname=name, language=language) }}
+    {% endfor %}
+    /****************************************
+     ************ END OF STEPS **************
+     ****************************************/
+
+    this.steps = [
+        {% for i, (name, step) in enumerate(steps) %}
+            {% if i > 0 %},{% endif %} new {{ name }}()
+        {% endfor %}
+    ];
+
+{% endblock %}
+
+{% block transform %}
+
+    return $this.steps.reduce(function(X, step) {
+        if (X === false) {
+            return false;
+        }
+
+        return step.transform(X);
+    }, source);
+
+{% endblock %}

@@ -23,7 +23,7 @@ The package implements most of the tools you need to develop a fully functional 
 
  [X] Data loading and visualization
  [X] Preprocessing
-    [X] Pipeline
+    [] Pipeline
     [X] BoxCox (power transform)
     [X] CrossDiff
     [X] MinMaxScaler
@@ -32,7 +32,9 @@ The package implements most of the tools you need to develop a fully functional 
     [X] RateLimit
     [X] StandardScaler
     [X] YeoJohnson (power transform)
-    [] Feature selection
+    [] Audio
+        [] MelSpectrogram
+    [X] Feature selection
         [X] RFE
         [X] SelectKBest
     [] Time series analysis
@@ -45,7 +47,7 @@ The package implements most of the tools you need to develop a fully functional 
     [X] LogisticRegression
     [X] GaussianNB
     []  BernoulliNB
-    [X] SVM
+    [] SVM (not tested)
     []  LinearSVM
     [X] DecisionTree
     [X] XGBoost

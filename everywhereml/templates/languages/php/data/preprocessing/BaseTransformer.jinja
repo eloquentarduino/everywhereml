@@ -1,4 +1,6 @@
-<?php
+{% if not embedded %}<?php{% endif %}
+
+{% block before_class %}{% endblock %}
 
 
 /**
@@ -30,6 +32,13 @@ class {{ classname }} {
      */
     public function transformAll(array $X) {
         return array_map([$this, 'transform'], $X);
+    }
+
+    /**
+     * Map values + indices
+     */
+    protected function map(callable $callable, array $source, ...$others) : array {
+        return array_map($callable, $source, range(0, count($source) - 1), ...$others);
     }
 
     {% block protected %}{% endblock %}

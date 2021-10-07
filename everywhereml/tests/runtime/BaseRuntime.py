@@ -15,6 +15,20 @@ class BaseRuntime:
         """
         self.files = []
 
+    def __str__(self):
+        """
+        Get runtime name
+        :return: str
+        """
+        return self.__module__.__str__().split(".")[-1]
+
+    def __repr__(self):
+        """
+        Get runtime name
+        :return: str
+        """
+        return str(self)
+
     def add_file(self, filename, contents):
         """
         Save file in project directory

@@ -13,10 +13,8 @@
 
 {% block transform %}
 
-    return array_map(function($x, $i) {
-        $lambda = $this->lambdas[$i];
-
+    return $this->map(function(float $x, int $i, float $lambda) {
         return $lambda === 0 ? log($x) : (pow($x, $lambda) - 1) / $lambda;
-    }, $source, array_keys(array_values($source)));
+    }, $source, $this->lambdas);
 
 {% endblock %}

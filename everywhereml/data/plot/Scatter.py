@@ -25,16 +25,18 @@ class Scatter:
         self.hue = hue
         self.size = size
 
-    def tsne(self, n_components=2, random_state=0, **kwargs):
+    def tsne(self, n_components=2, random_state=0, learning_rate="auto", init="pca", **kwargs):
         """
         Apply t-SNE
         :param n_components: int (default=2)
         :param random_state: int (default=0)
+        :param learning_rate: float|"auto" (default="auto")
+        :param init: {"random", "pca"}|ndarray
         :return: self
         """
         assert isinstance(n_components, int) and n_components >= 1, 'n_components MUST be positive'
 
-        self.X = TSNE(n_components=n_components, random_state=random_state, **kwargs).fit_transform(self.X)
+        self.X = TSNE(n_components=n_components, random_state=random_state, learning_rate=learning_rate, init=init, **kwargs).fit_transform(self.X)
 
         return self
 
