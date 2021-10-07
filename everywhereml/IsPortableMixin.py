@@ -13,6 +13,11 @@ class IsPortableMixin:
         :param data: dict
         :return: str ported code
         """
+
+        # allow aliases for languages
+        if language == 'c++':
+            language = 'cpp'
+
         template_name = '%s.jinja' % self.__module__.__str__().replace('everywhereml.', '').replace('.', '/')
         template_data = self.get_template_data(**kwargs)
         template_data.update(self.get_template_data_for_language(language))
