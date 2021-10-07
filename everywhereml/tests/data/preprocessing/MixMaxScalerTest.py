@@ -7,4 +7,6 @@ class MinMaxScalerTest(BaseTransformerTest):
         return [
             MinMaxScaler(num_features=-1),
             MinMaxScaler(num_features=dataset.num_columns),
+            MinMaxScaler(clip=True),
+            MinMaxScaler(features_range=(0, 100))
         ]

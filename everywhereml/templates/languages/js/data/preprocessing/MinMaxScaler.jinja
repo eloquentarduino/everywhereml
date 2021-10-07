@@ -2,17 +2,12 @@
 
 {% block constructor %}
     this.m = {{ min | to_array }};
-    this.invRange = {{ inv_range | to_array }};
+    // instead of dividing by range, multiply by 1/range, which is faster
+    this.invRange = {{ (1 / ranges) | to_array }};
 {% endblock %}
 
 {% block transform %}
-    {% if num_features == 0 %}
-        return source.map(function(x) {
-            return (x - {{ min }}) * {{ inv_range }};
-        });
-    {% else %}
-        return source.map(function(x, i) {
-            return (x - $this.m[i % {{ num_features }}]) * $this.invRange[i % {{ num_features }}];
-        });
-    {% endif %}
+    return source.map(function(x, i) {
+        return (x - $this.m[i % {{ num_features }}]) * $this.invRange[i % {{ num_features }}] + {{ features_range[0] }};
+    });
 {% endblock %}

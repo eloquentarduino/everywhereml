@@ -1,17 +1,21 @@
 from copy import copy
+from collections.abc import Iterable
 from everywhereml.IsPortableMixin import IsPortableMixin
 from everywhereml.data.preprocessing.BaseTransformer import BaseTransformer
 from everywhereml.classification.utils import to_Xy
 
 
 class Pipeline(BaseTransformer):
-    def __init__(self, name, steps):
+    def __init__(self, name=None, steps=None):
         """
         Constructor
         :param name: str
         :param steps: list
         """
-        super().__init__(name)
+        super().__init__(name or "Pipeline")
+
+        assert isinstance(steps, Iterable), "steps MUST be an Iterable object"
+
         self.steps = []
         self.X_input = None
         self.y_input = None

@@ -10,10 +10,9 @@ def to_array(arr, precision=9, with_parentheses=True):
     :param with_parentheses: bool
     :return:
     """
-    if not is_list(arr):
-        if np.isinf(arr):
-            arr = np.finfo(np.float32).max
+    arr = np.nan_to_num(arr)
 
+    if not is_list(arr):
         fmt = '%%.%df' % precision
         return fmt % arr
 

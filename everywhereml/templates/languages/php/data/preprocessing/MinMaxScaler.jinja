@@ -15,18 +15,13 @@
 
 {% block constructor %}
     $this->m = {{ min | to_array }};
-    $this->invRange = {{ inv_range | to_array }};
+    // instead of dividing by range, multiply by 1/range, which is faster
+    $this->invRange = {{ (1 / ranges) | to_array }};
 {% endblock %}
 
 
 {% block transform %}
-    {% if num_features == 0 %}
-        return $this->map(function(float $x) {
-            return ($x - {{ min }}) * {{ inv_range }};
-        }, $source);
-    {% else %}
-        return $this->map(function(float $x, int $i) {
-            return ($x - $this->m[$i % {{ num_features }}]) * $this->invRange[$i % {{ num_features }}];
-        }, $source);
-    {% endif %}
+    return $this->map(function(float $x, int $i) {
+        return ($x - $this->m[$i % {{ num_features }}]) * $this->invRange[$i % {{ num_features }}] + {{ features_range[0] }};
+    }, $source);
 {% endblock %}
