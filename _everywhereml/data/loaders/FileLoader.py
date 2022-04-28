@@ -6,9 +6,13 @@ from everywhereml.data.loaders.BaseLoader import BaseLoader
 
 
 class FileLoader(BaseLoader):
-    """
-    Load data from file
+    """Load data from file
     (uses pandas.read_csv internally)
+
+    @todo one-hot/ordinal encoding of string columns (allow dict for column-specific overrides
+        (eg. {'city': 'one-hot', 'name': 'ordinal'})
+    @todo drop_columns to drop given columns
+    @todo columns to only keep given columns
     """
     def __init__(self, filename, target_column=-1, **kwargs):
         """

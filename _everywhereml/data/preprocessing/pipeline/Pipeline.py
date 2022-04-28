@@ -42,13 +42,17 @@ class Pipeline(BaseTransformer):
         :param item: int|str|slice
         :return: step|Pipeline
         """
+        # by index
         if isinstance(item, int):
             return self.steps[item]
 
+        # by name
         elif isinstance(item, str):
             return [step for name, step in self.steps if name == item][0]
 
+        # by slice
         elif isinstance(item, slice):
+            # slice.start
             if isinstance(item.start, int):
                 start = item.start
             elif isinstance(item.start, str):
@@ -56,10 +60,11 @@ class Pipeline(BaseTransformer):
             else:
                 start = 0
 
+            # slice.end
             if isinstance(item.stop, int):
                 stop = item.stop
             elif isinstance(item.stop, str):
-                stop = self.index_of(item.stop)
+                stop = self.index_of(item.stop) + 1
             else:
                 stop = len(self.steps)
 

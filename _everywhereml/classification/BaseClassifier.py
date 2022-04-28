@@ -2,14 +2,13 @@ from cached_property import cached_property
 from sklearn.model_selection import KFold
 from everywhereml.IsPortableMixin import IsPortableMixin
 from everywhereml.classification.utils import to_Xy
-from everywhereml.data.plot import plot_confusion_matrix
+from everywhereml.plot import plot_confusion_matrix
 from everywhereml.classification.MakesBinaryDecisionMixin import MakesBinaryDecisionMixin
 from everywhereml.classification.MakesBinaryComplementDecisionMixin import MakesBinaryComplementDecisionMixin
 
 
 class BaseClassifier(IsPortableMixin):
-    """
-    Base class for classifiers
+    """Base class for classifiers
     """
     @property
     def num_inputs(self):

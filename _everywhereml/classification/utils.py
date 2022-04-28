@@ -20,4 +20,4 @@ def to_Xy(X, y=None, allow_y_none=False):
     assert X is not None, "X CANNOT be None"
     assert y is None or len(X) == len(y), "X and y MUST have the same length"
 
-    return np.asarray(X), np.asarray(y, dtype=np.uint8)
+    return np.asarray(X), np.asarray(y, dtype=np.uint8) if y is not None else None
