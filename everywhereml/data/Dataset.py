@@ -1,12 +1,38 @@
 import numpy as np
 from pandas import DataFrame
 from sklearn.model_selection import train_test_split
+from everywhereml.plot.DatasetPlotter import DatasetPlotter
 
 
 class Dataset:
     """
     Dataset data structure
     """
+    @staticmethod
+    def from_XY(X, y, feature_names=None, target_names=None, name=None):
+        """
+        Construct dataset from X and y arrays
+        :param X:
+        :param y:
+        :param feature_names:
+        :param target_names:
+        :param name:
+        :return:
+        """
+        if isinstance(X, Dataset):
+            dataset = X
+            y = dataset.y
+            X = dataset.X
+            feature_names = feature_names or dataset.feature_names
+            target_names = target_names or dataset.target_names
+
+        return Dataset(
+            name=name or 'Dataset',
+            feature_names=feature_names,
+            target_names=target_names,
+            X=X,
+            y=y if y is not None else np.zeros(len(X))
+        )
 
     @staticmethod
     def from_sklearn(dataset, name=None):
@@ -22,6 +48,27 @@ class Dataset:
             target_names=dataset.target_names,
             X=dataset.data,
             y=dataset.target
+        )
+
+    @staticmethod
+    def from_pandas(df, name, target_column='target', target_name_column=None):
+        """
+        Construct dataset from pandas dataframe
+        :param df:
+        :param name:
+        :param target_column:
+        :param target_name_column:
+        :return:
+        """
+        feature_names = [c for c in df.columns if c != target_column and c != target_name_column]
+        target_names = df[target_name_column] if target_name_column is not None else None
+        
+        return Dataset(
+            name=name,
+            feature_names=feature_names,
+            target_names=target_names,
+            X=df[feature_names],
+            y=df[target_column]
         )
 
     def __init__(self, name, X, y, feature_names=None, target_names=None):
@@ -45,13 +92,45 @@ class Dataset:
 
         self.replace(X=X, y=y, feature_names=feature_names, target_names=target_names)
 
-    # @property
-    # def plot(self):
-    #     """
-    #     Get instance of dataset plotter
-    #     :return:
-    #     """
-    #     return DatasetPlotter(self)
+    @property
+    def distinct_targets(self):
+        """
+        Get distinct targets, sorted
+        :return:
+        """
+        return sorted(list(set(self.y)))
+
+    @property
+    def num_inputs(self):
+        """
+        Get number of inputs
+        :return: int
+        """
+        return len(self.feature_names)
+
+    @property
+    def num_outputs(self):
+        """
+        Get number of outputs
+        :return:
+        """
+        return len(self.distinct_targets)
+
+    @property
+    def class_map(self):
+        """
+        Get mapping from target id to target name
+        :return: dict
+        """
+        return {i: target_name for i, target_name in enumerate(self.target_names)}
+
+    @property
+    def plot(self):
+        """
+        Get instance of dataset plotter
+        :return:
+        """
+        return DatasetPlotter(self)
 
     def describe(self):
         """
@@ -82,7 +161,7 @@ class Dataset:
             self.target_names = target_names
 
         self._assert_consistency()
-        self.update_df()
+        self._update_df()
 
         return self
 
@@ -134,17 +213,16 @@ class Dataset:
             self.clone(name='%s Test' % self.name, X=X_test, y=y_test)
         )
 
-    def update_df(self):
+    def _update_df(self):
         """
         Update internal DataFrame
         :return:
         """
         data = np.hstack((self.X, self.y.reshape((-1, 1))))
         columns = self.feature_names + ['target']
-        target_names = [self.target_names[int(target)] for target in self.y]
 
         self.df = DataFrame(data, columns=columns)
-        self.df['target_name'] = target_names
+        self.df['target_name'] = [self.target_names[int(target)] for target in self.y]
 
     def _assert_consistency(self):
         """

@@ -10,7 +10,7 @@ setup(
   license='MIT',
   description='Train ML in Python, run everywhere',
   author='Simone Salerno',
-  author_email='eloquentarduino@gmail.com',
+  author_email='support@eloquentarduino.com',
   url='https://github.com/eloquentarduino/everywhereml',
   download_url='https://github.com/eloquentarduino/everywhereml/blob/master/dist/everywhereml-VERSION.tar.gz?raw=true',
   keywords=[
@@ -19,6 +19,8 @@ setup(
   ],
   install_requires=[
     'numpy',
+    'pandas',
+    'seaborn',
     'scikit-learn',
     'Jinja2',
     'cached-property',
