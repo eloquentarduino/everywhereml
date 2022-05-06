@@ -8,4 +8,6 @@ __pycache__
 ./publish
 ./setup_template.py
 ./test
+./.idea
+./docs
 ./_everywhereml
