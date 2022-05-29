@@ -1,0 +1,14 @@
+{% if left[i] != right[i] %}
+    if (x[{{ features[i] }}] <= {{ thresholds[i] }}) {
+        {% with i = left[i] %}
+            {% include './tree' %}
+        {% endwith %}
+    }
+    else {
+        {% with i = right[i] %}
+            {% include './tree' %}
+        {% endwith %}
+    }
+{% else %}
+    predictedValue = {{ classes[i].argmax() }};
+{% endif %}

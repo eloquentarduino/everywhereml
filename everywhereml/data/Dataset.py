@@ -9,6 +9,15 @@ class Dataset:
     Dataset data structure
     """
     @staticmethod
+    def looks_like(dataset):
+        """
+        Test if argument looks like a dataset
+        :param dataset:
+        :return: bool
+        """
+        return hasattr(dataset, 'X') and hasattr(dataset, 'y') and hasattr(dataset, 'feature_names') and hasattr(dataset, 'target_names')
+
+    @staticmethod
     def from_XY(X, y, feature_names=None, target_names=None, name=None):
         """
         Construct dataset from X and y arrays
@@ -19,7 +28,7 @@ class Dataset:
         :param name:
         :return:
         """
-        if isinstance(X, Dataset):
+        if Dataset.looks_like(X):
             dataset = X
             y = dataset.y
             X = dataset.X

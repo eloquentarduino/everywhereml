@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 packages=["everywhereml", "everywhereml.plot", "everywhereml.sklearn", "everywhereml.sklearn.ensemble", "everywhereml.sklearn.ensemble.templates", "everywhereml.sklearn.ensemble.templates.cpp", "everywhereml.code_generators", "everywhereml.code_generators.jinja", "everywhereml.code_generators.jinja.filters", "everywhereml.templates", "everywhereml.templates.cpp", "everywhereml.preprocessing", "everywhereml.preprocessing.Pipeline", "everywhereml.preprocessing.Pipeline.templates", "everywhereml.preprocessing.MinMaxScaler", "everywhereml.preprocessing.MinMaxScaler.templates", "everywhereml.preprocessing.templates", "everywhereml.data"]
-data=["sklearn/ensemble/templates/tree.cpp.jinja", "sklearn/ensemble/templates/RandomForestClassifier.cpp.jinja", "templates/vote.cpp.jinja", "templates/class_map.cpp.jinja", "templates/BaseClassifier.cpp.jinja", "preprocessing/Pipeline/templates/Pipeline.cpp.jinja", "preprocessing/MinMaxScaler/templates/MinMaxScaler.cpp.jinja", "preprocessing/templates/Step.cpp.jinja"]
+data=["sklearn/ensemble/templates/tree.cpp.jinja", "sklearn/ensemble/templates/DecisionTreeClassifier.cpp.jinja", "templates/vote.cpp.jinja", "templates/class_map.cpp.jinja", "templates/BaseClassifier.cpp.jinja", "preprocessing/Pipeline/templates/Pipeline.cpp.jinja", "preprocessing/MinMaxScaler/templates/MinMaxScaler.cpp.jinja", "preprocessing/templates/Step.cpp.jinja"]
 
 setup(
   name='everywhereml',
@@ -24,6 +24,8 @@ setup(
     'scikit-learn',
     'Jinja2',
     'cached-property',
+    'pySerial',
+    'tqdm'
   ],
   package_data={
     'everywhereml': data
