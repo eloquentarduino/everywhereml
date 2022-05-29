@@ -14,6 +14,8 @@ everywhereml/code_generators/jinja/filters/to_c_array.py
 everywhereml/code_generators/jinja/filters/to_c_comment.py
 everywhereml/data/Dataset.py
 everywhereml/data/__init__.py
+everywhereml/data/collect/SerialCollector.py
+everywhereml/data/collect/__init__.py
 everywhereml/plot/DatasetPlotter.py
 everywhereml/plot/__init__.py
 everywhereml/preprocessing/__init__.py
@@ -34,7 +36,11 @@ everywhereml/sklearn/ensemble/__init__.py
 everywhereml/sklearn/ensemble/templates/RandomForestClassifier.cpp.jinja
 everywhereml/sklearn/ensemble/templates/__init__.py
 everywhereml/sklearn/ensemble/templates/tree.cpp.jinja
-everywhereml/sklearn/ensemble/templates/cpp/__init__.py
+everywhereml/sklearn/tree/DecisionTreeClassifier.py
+everywhereml/sklearn/tree/__init__.py
+everywhereml/sklearn/tree/templates/DecisionTreeClassifier.cpp.jinja
+everywhereml/sklearn/tree/templates/__init__.py
+everywhereml/sklearn/tree/templates/tree.cpp.jinja
 everywhereml/templates/BaseClassifier.cpp.jinja
 everywhereml/templates/__init__.py
 everywhereml/templates/class_map.cpp.jinja
