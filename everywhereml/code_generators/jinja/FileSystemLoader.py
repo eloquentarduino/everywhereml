@@ -29,12 +29,17 @@ class FileSystemLoader(Base):
         :return:
         """
         template = template.replace(os.path.sep, '/')
+        parent_folder = self.template_folder.replace(f'{template}/', '')
         attempts = [
             f'{self.template_folder}/{self.language}/{self.dialect or "dialect"}/{template}.jinja',
             f'{self.template_folder}/{self.language}/{template}.{self.dialect or "dialect"}.jinja',
             f'{self.template_folder}/{self.language}/{template}.jinja',
             f'{self.template_folder}/{template}.{self.language}.jinja',
             f'{self.template_folder}/{template}.jinja',
+            f'{parent_folder}/{template}.{self.language}.{self.dialect or "dialect"}.jinja',
+            f'{parent_folder}/{template}.{self.language}.jinja',
+            f'{parent_folder}/{template}.jinja',
+            f'{template}.{self.language}.{self.dialect or "dialect"}.jinja',
             f'{template}.{self.language}.jinja',
             f'{template}.jinja'
         ]

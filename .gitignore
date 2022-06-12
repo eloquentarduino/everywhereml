@@ -3,11 +3,9 @@ __pycache__
 *.py[cod]
 .cache
 .ipynb_checkpoints
-./enumerate_packages.py
-./enumerate_templates.py
-./publish
-./setup_template.py
-./test
-./.idea
-./docs
-./_everywhereml
+enumerate_packages.py
+enumerate_templates.py
+publish
+setup_template.py
+test
+.idea

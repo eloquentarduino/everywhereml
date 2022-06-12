@@ -1,2 +1,4 @@
-from everywhereml.preprocessing.MinMaxScaler.MinMaxScaler import MinMaxScaler
-from everywhereml.preprocessing.Pipeline.Pipeline import Pipeline
+from everywhereml.preprocessing.MinMaxScaler import MinMaxScaler
+from everywhereml.preprocessing.Window import Window
+from everywhereml.preprocessing.SpectralFeatures import SpectralFeatures
+from everywhereml.preprocessing.Pipeline import Pipeline

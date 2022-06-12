@@ -1,9 +1,0 @@
-{% set helpers = {'ii': 0} %}
-
-{% for i in range(0, num_classes) %}
-  {% for j in range(i + 1, num_classes) %}
-        $votes[$decisions[{{ helpers.ii }}] > 0 ? {{ i }} : {{ j }}] += 1;
-
-        {% if helpers.update({'ii': helpers.ii + 1}) %}{% endif %}
-   {% endfor %}
-{% endfor %}

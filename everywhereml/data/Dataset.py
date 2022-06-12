@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 from pandas import DataFrame
 from sklearn.model_selection import train_test_split
 from everywhereml.plot.DatasetPlotter import DatasetPlotter
@@ -60,6 +61,24 @@ class Dataset:
         )
 
     @staticmethod
+    def from_csv(filename, name, target_column='target', target_name_column=None, **kwargs):
+        """
+        Construct dataset from csv file
+        :param filename:
+        :param name:
+        :param target_column:
+        :param target_name_column:
+        :param kwargs:
+        :return:
+        """
+        return Dataset.from_pandas(
+            pd.read_csv(filename, **kwargs),
+            name=name,
+            target_column=target_column,
+            target_name_column=target_name_column
+        )
+
+    @staticmethod
     def from_pandas(df, name, target_column='target', target_name_column=None):
         """
         Construct dataset from pandas dataframe
@@ -69,15 +88,17 @@ class Dataset:
         :param target_name_column:
         :return:
         """
-        feature_names = [c for c in df.columns if c != target_column and c != target_name_column]
-        target_names = df[target_name_column] if target_name_column is not None else None
-        
+        numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
+        numeric_df = df.select_dtypes(include=numerics)
+        feature_names = [c for c in numeric_df.columns if c != target_column and c != target_name_column]
+        target_names = df[target_name_column].unique() if target_name_column is not None else None
+
         return Dataset(
             name=name,
             feature_names=feature_names,
             target_names=target_names,
-            X=df[feature_names],
-            y=df[target_column]
+            X=df[feature_names].to_numpy(),
+            y=df[target_column].to_numpy()
         )
 
     def __init__(self, name, X, y, feature_names=None, target_names=None):
@@ -95,6 +116,7 @@ class Dataset:
         self.y = None
         self.feature_names = None
         self.target_names = None
+        self.annotations = []
 
         feature_names = [f for f in feature_names] if feature_names is not None else ['f_%d' % i for i in range(X.shape[1])]
         target_names = [n for n in target_names] if target_names is not None else ['target_%d' % i for i in range(len(set(y)))]
@@ -194,7 +216,40 @@ class Dataset:
             y=y.copy(),
             target_names=self.target_names,
             feature_names=self.feature_names
-        )
+        ).annotate(*self.annotations)
+
+    def annotate(self, *args, **kwargs):
+        """
+        Add annotation to dataset
+        :param args:
+        :param kwargs:
+        :return: self
+        """
+        if len(args) > 0:
+            for arg in args:
+                if isinstance(arg, dict):
+                    self.annotate(**arg)
+
+        if len(kwargs) > 0:
+            self.annotations.append(kwargs)
+
+        return self
+
+    def get_annotations_by_attribute(self, attribute, **kwargs):
+        """
+        Get annotation that has the given attribute
+        :param attribute: str
+        :return: iterator
+        """
+        search_by_value = 'value' in kwargs
+        value = kwargs.get('value')
+
+        for annotation in self.annotations:
+            if attribute in annotation:
+                if not search_by_value or annotation.get(attribute) == value:
+                    yield annotation.get(attribute)
+
+        return None
 
     def apply(self, pipeline):
         """
@@ -241,6 +296,6 @@ class Dataset:
         assert self.X is not None, 'X CANNOT be NONE'
         assert self.y is not None, 'y CANNOT be NONE'
         assert len(self.X) == len(self.y), 'X and y MUST have the same length. X has shape %s, y has shape %s' % (str(self.X.shape), str(self.y.shape))
-        assert len(self.feature_names) == self.X.shape[1], 'feature_names MUST be None or have the same length of X.shape[1]'
+        assert len(self.feature_names) == self.X.shape[1], 'feature_names MUST be None or have the same length of X.shape[1] (%d given, %d expected)' % (len(self.feature_names), self.X.shape[1])
         assert len(self.target_names) == len(set(self.y)), 'target_names MUST be None or have the same length as the number of labels'
 

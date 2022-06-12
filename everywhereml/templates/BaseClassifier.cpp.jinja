@@ -21,17 +21,12 @@ class {{ class_name or this.class_name }} {
             return (lastPrediction = predictedValue);
         }
 
-        /**
-         * Get time spent for inference, in microseconds
-         */
-        size_t latencyInMicros() {
-            return latency;
-        }
 
         {% include './class_map' %}
+        {% include './latency' %}
 
     protected:
-        size_t latency = 0;
+        float latency = 0;
         {{ dtype | default("int", true) }} lastPrediction = 0;
 
         {% block protected %}{% endblock %}
