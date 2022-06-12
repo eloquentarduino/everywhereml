@@ -1,18 +1,18 @@
 from distutils.core import setup
 
-packages=["everywhereml", "everywhereml.plot", "everywhereml.sklearn", "everywhereml.sklearn.tree", "everywhereml.sklearn.tree.templates", "everywhereml.sklearn.ensemble", "everywhereml.sklearn.ensemble.templates", "everywhereml.code_generators", "everywhereml.code_generators.jinja", "everywhereml.code_generators.jinja.filters", "everywhereml.templates", "everywhereml.templates.cpp", "everywhereml.preprocessing", "everywhereml.preprocessing.Pipeline", "everywhereml.preprocessing.Pipeline.templates", "everywhereml.preprocessing.MinMaxScaler", "everywhereml.preprocessing.MinMaxScaler.templates", "everywhereml.preprocessing.templates", "everywhereml.data", "everywhereml.data.collect"]
-data=["sklearn/tree/templates/tree.cpp.jinja", "sklearn/tree/templates/DecisionTreeClassifier.cpp.jinja", "sklearn/ensemble/templates/tree.cpp.jinja", "sklearn/ensemble/templates/RandomForestClassifier.cpp.jinja", "templates/vote.cpp.jinja", "templates/class_map.cpp.jinja", "templates/BaseClassifier.cpp.jinja", "preprocessing/Pipeline/templates/Pipeline.cpp.jinja", "preprocessing/MinMaxScaler/templates/MinMaxScaler.cpp.jinja", "preprocessing/templates/Step.cpp.jinja"]
+packages=["everywhereml", "everywhereml.plot", "everywhereml.sklearn", "everywhereml.sklearn.tree", "everywhereml.sklearn.tree.templates", "everywhereml.sklearn.ensemble", "everywhereml.sklearn.ensemble.templates", "everywhereml.get_started", "everywhereml.code_generators", "everywhereml.code_generators.jinja", "everywhereml.code_generators.jinja.filters", "everywhereml.templates", "everywhereml.templates.cpp", "everywhereml.preprocessing", "everywhereml.preprocessing.templates", "everywhereml.data", "everywhereml.data.collect"]
+data=["sklearn/tree/templates/tree.cpp.jinja", "sklearn/tree/templates/DecisionTreeClassifier.cpp.jinja", "sklearn/ensemble/templates/tree.cpp.jinja", "sklearn/ensemble/templates/RandomForestClassifier.cpp.jinja", "templates/latency.cpp.jinja", "templates/vote.cpp.jinja", "templates/class_map.cpp.jinja", "templates/BaseClassifier.cpp.jinja", "preprocessing/templates/Step.cpp.jinja", "preprocessing/templates/Pipeline.cpp.jinja", "preprocessing/templates/SpectralFeatures.cpp.jinja", "preprocessing/templates/Window.cpp.jinja", "preprocessing/templates/MinMaxScaler.cpp.jinja"]
 
 setup(
   name='everywhereml',
   packages=packages,
-  version='0.0.2',
+  version='0.0.3',
   license='MIT',
   description='Train ML in Python, run everywhere',
   author='Simone Salerno',
   author_email='support@eloquentarduino.com',
   url='https://github.com/eloquentarduino/everywhereml',
-  download_url='https://github.com/eloquentarduino/everywhereml/blob/master/dist/everywhereml-0.0.2.tar.gz?raw=true',
+  download_url='https://github.com/eloquentarduino/everywhereml/blob/master/dist/everywhereml-0.0.3.tar.gz?raw=true',
   keywords=[
     'ML',
     'machine learning'
