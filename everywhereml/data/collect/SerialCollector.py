@@ -1,11 +1,16 @@
 import numpy as np
+from os import mkdir
+from os.path import isdir
 from serial import Serial
 from time import time
 from tqdm import tqdm
-from everywhereml.data import Dataset
+from skimage.io import imsave
+from everywhereml.data import Dataset, ImageDataset
+from everywhereml.data.collect.ByteStream import ByteStream
+from everywhereml.data.collect.BaseCollector import BaseCollector
 
 
-class SerialCollector:
+class SerialCollector(BaseCollector):
     """
     Collect dataset from Serial port
     (mainly for Arduino projects)
@@ -15,9 +20,10 @@ class SerialCollector:
             port,
             baud=9600,
             start_of_frame=None,
+            end_of_frame=None,
             num_features=None,
             feature_names=None,
-            delimiter=','
+            delimiter=',',
     ):
         """
 
@@ -31,12 +37,14 @@ class SerialCollector:
             num_features = len(feature_names)
 
         assert start_of_frame is None or isinstance(start_of_frame, str), 'start_of_frame MUST be a stirng'
+        assert end_of_frame is None or isinstance(end_of_frame, str), 'end_of_frame MUST be a stirng'
         assert num_features is None or isinstance(num_features, int) and num_features > 0, 'num_features MUST be greater than 0'
         assert feature_names is None or num_features is None or len(feature_names) == num_features, 'feature_names count MUST match num_features'
 
         self.port = port
         self.baud = baud
         self.start_of_frame = start_of_frame
+        self.end_of_frame = end_of_frame
         self.num_features = num_features
         self.feature_names = feature_names
         self.delimiter = delimiter
@@ -47,6 +55,7 @@ class SerialCollector:
             num_samples=0,
             duration=0,
             timeout=5,
+            decode=None,
             **kwargs
     ):
         """
@@ -54,63 +63,121 @@ class SerialCollector:
         :param duration:
         :param dataset_name: str
         :param num_samples: int
-        :param delimiter: str
         :param timeout: int timeout for serial
         :return:
         """
-        with Serial(port=self.port, baudrate=self.baud, timeout=timeout) as serial:
-            target_names = []
-            X = []
-            y = []
-            target_idx = 0
+        assert decode is None or callable(decode), 'decode MUST be callable'
 
-            print('This is an interactive data capturing procedure.')
-            print('Keep in mind that as soon as you will enter a class name, the capturing will start, so be ready!')
+        target_names = []
+        X = []
+        y = []
+        target_idx = 0
 
-            while True:
-                try:
-                    target_name = input('Which class are you going to capture? (leave empty to exit) ').strip()
+        for target_name in self.ask_target_name():
+            with Serial(port=self.port, baudrate=self.baud, timeout=timeout) as serial:
+                # discard first line to be sure new line is properly formatted
+                serial.readline()
+                serial.reset_input_buffer()
 
-                    if len(target_name) == 0 and input('Are you sure you want to exit? (y|n) ').strip().lower() == 'y':
-                        break
+                if duration > 0:
+                    class_data = self._collect_by_duration(serial=serial, duration=duration, decode=decode)
+                else:
+                    class_data = self._collect_by_samples(serial=serial, num_samples=num_samples, decode=decode)
 
-                    if len(target_name) == 0:
-                        continue
+            print('Captured %d samples' % len(class_data))
 
-                    # discard first line to be sure new line is properly formatted
-                    serial.readline()
-                    serial.reset_input_buffer()
+            if input('Is this class ok? (y|n) ').strip().lower() != 'y':
+                continue
 
-                    if duration > 0:
-                        class_data = self._collect_by_duration(serial=serial, duration=duration)
-                    else:
-                        class_data = self._collect_by_samples(serial=serial, num_samples=num_samples)
+            target_names.append(target_name)
+            X += class_data
+            y += [target_idx] * len(class_data)
+            target_idx += 1
 
-                    print('Captured %d samples' % len(class_data))
+        assert len(X) > 0, 'No data captured'
 
-                    if input('Is this class ok? (y|n) ').strip().lower() != 'y':
-                        continue
+        feature_names = [f'f{i}' for i in range(len(X[0]))] if self.feature_names is None else self.feature_names
 
-                    target_names.append(target_name)
-                    X += class_data
-                    y += [target_idx] * len(class_data)
-                    target_idx += 1
-                except ValueError:
-                    pass
+        return Dataset(
+            name=dataset_name,
+            X=np.asarray(X),
+            y=np.asarray(y, dtype=np.int),
+            feature_names=feature_names,
+            target_names=target_names
+        )
 
-            assert len(X) > 0, 'No data captured'
+    def collect_many_images(
+            self,
+            dataset_name,
+            base_folder,
+            shape,
+            num_samples=0,
+            duration=0,
+            max_fps=0,
+            timeout=5,
+            **kwargs
+    ):
+        """
+        Collect images for many classes
+        :param shape:
+        :param max_fps:
+        :param base_folder:
+        :param duration:
+        :param dataset_name: str
+        :param num_samples: int
+        :param timeout: int timeout for serial
+        :return:
+        """
+        target_names = []
+        image_length = shape[0] * shape[1]
 
-            feature_names = [f'f{i}' for i in len(X[0])] if self.feature_names is None else self.feature_names
+        for target_name in self.ask_target_name():
+            with Serial(port=self.port, baudrate=self.baud, timeout=timeout) as serial:
+                # discard first line to be sure new line is properly formatted
+                serial.readline()
+                serial.reset_input_buffer()
 
-            return Dataset(
-                name=dataset_name,
-                X=np.asarray(X),
-                y=np.asarray(y, dtype=np.int),
-                feature_names=feature_names,
-                target_names=target_names
-            )
+                stream = ByteStream(
+                    source=lambda: serial.read(1024),
+                    start_of_frame=self.start_of_frame,
+                    end_of_frame=self.end_of_frame,
+                    max_fps=max_fps
+                )
 
-    def _collect_by_duration(self, serial, duration):
+                if duration > 0:
+                    images = list(stream.collect_duration(duration))
+                else:
+                    images = list(stream.collect_samples(num_samples))
+
+                print(f'Collected {len(images)} images')
+
+                if input('Is this class ok? (y|n) ').strip().lower() != 'y':
+                    continue
+
+                assert len(images) > 0, 'No image captured'
+
+                if not isdir(base_folder):
+                    mkdir(base_folder, 0o777)
+
+                if not isdir(f'{base_folder}/{target_name}'):
+                    mkdir(f'{base_folder}/{target_name}', 0o777)
+
+                for i, image in enumerate(images):
+                    arr = np.asarray([int(b) for b in image], dtype=np.uint8)
+
+                    if len(arr) == image_length:
+                        imsave(f'{base_folder}/{target_name}/{time()}.{i}.jpg', arr.reshape(shape))
+
+                target_names.append(target_name)
+
+        return ImageDataset.from_nested_folders(
+            name=dataset_name,
+            base_folder=base_folder,
+            file_types=['jpg'],
+            only_folders=target_names
+        )
+
+    def _collect_by_duration(self, serial, duration, decode=None):
         """
         Collect data for the given amount of time
         :param serial:
@@ -126,12 +193,22 @@ class SerialCollector:
 
             while current_tick <= end_time:
                 current_tick = int(time())
-                line = serial.readline().decode('utf-8').strip()
-
-                if not self._line_is_well_formatted(line):
+                try:
+                    line = serial.readline().decode('utf-8').strip()
+                except UnicodeDecodeError:
                     continue
 
-                record = [float(x) for x in self._trim(line).split(self.delimiter)]
+                if decode is not None:
+                    try:
+                        record = decode(line)
+                    except:
+                        continue
+                else:
+                    if not self._line_is_well_formatted(line):
+                        continue
+
+                    record = [float(x) for x in self._trim(line).split(self.delimiter)]
+
                 records.append(record)
 
                 if last_tick != current_tick:
@@ -140,11 +217,12 @@ class SerialCollector:
 
         return records
 
-    def _collect_by_samples(self, serial, num_samples):
+    def _collect_by_samples(self, serial, num_samples, decode):
         """
         Collect the given number of samples
         :param serial:
         :param num_samples:
+        :param decode:
         :return:
         """
         records = []
@@ -159,12 +237,22 @@ class SerialCollector:
             captured_samples = 0
 
             while captured_samples < num_samples:
-                line = serial.readline().decode('utf-8').strip()
-
-                if not self._line_is_well_formatted(line):
+                try:
+                    line = serial.readline().decode('utf-8').strip()
+                except UnicodeDecodeError:
                     continue
 
-                record = [float(x) for x in self._trim(line).split(self.delimiter)]
+                if decode is not None:
+                    try:
+                        record = decode(line)
+                    except:
+                        continue
+                else:
+                    if not self._line_is_well_formatted(line):
+                        continue
+
+                    record = [float(x) for x in self._trim(line).split(self.delimiter)]
+
                 records.append(record)
                 captured_samples += 1
                 progress.update(1)

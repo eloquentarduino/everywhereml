@@ -1,5 +1,5 @@
 import numpy as np
-from everywhereml.code_generators.GeneratesCode import GeneratesCode
+from everywhereml.code_generators import GeneratesCode
 
 
 class MinMaxScaler(GeneratesCode):
@@ -51,6 +51,8 @@ class MinMaxScaler(GeneratesCode):
         :return:
         """
         X = (dataset.X - self.min) / (self.max - self.min) * (self.high - self.low) + self.low
+        X[X < self.low] = self.low
+        X[X > self.high] = self.high
 
         return dataset.replace(X=X)
 
@@ -64,5 +66,7 @@ class MinMaxScaler(GeneratesCode):
             'num_inputs': self.num_inputs,
             'offset': self.min,
             'scale': np.nan_to_num(1 / (self.max - self.min)) * (self.high - self.low),
-            'offset2': self.low
+            'offset2': self.low,
+            'low': self.low,
+            'high': self.high
         }

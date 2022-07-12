@@ -38,14 +38,6 @@ class GeneratesCode:
         """
         raise NotImplementedError('get_template_data()')
 
-    def get_template_data_cpp(self, dialect=None):
-        """
-        Get C++ specific data
-        :param dialect: str
-        :return:
-        """
-        return {}
-
     def to_cpp_file(self, filename, **kwargs):
         """
         Save C++ code to file
@@ -79,7 +71,6 @@ class GeneratesCode:
             namespace=namespace,
             instance_name=instance_name,
             dialect=dialect,
-            language_data=self.get_template_data_cpp(dialect=dialect),
             **kwargs
         )
 
@@ -90,7 +81,7 @@ class GeneratesCode:
         """
         return self.to_cpp(dialect='arduino', **kwargs)
 
-    def to_language(self, language, dialect=None, language_data=None, **kwargs):
+    def to_language(self, language, dialect=None, **kwargs):
         """
         Generate code in given language
         :param language: str
@@ -99,9 +90,13 @@ class GeneratesCode:
         :param kwargs:
         :return:
         """
+        language_data_function = f'get_template_data_{language}'
+        language_data = (getattr(self, language_data_function)(dialect=dialect)
+                            if hasattr(self, language_data_function) else {})
+
         jinja = Jinja(self.template_folder, language=language, dialect=dialect)
         jinja.update(**self.get_template_data())
-        jinja.update(**(language_data or {}))
+        jinja.update(**language_data)
         jinja.update(**kwargs)
         jinja.update(this=self, UUID=f'UUID{id(self)}', description=str(self).split('\n'))
 

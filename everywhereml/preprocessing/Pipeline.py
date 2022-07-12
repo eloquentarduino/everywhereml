@@ -1,4 +1,4 @@
-from everywhereml.code_generators.GeneratesCode import GeneratesCode
+from everywhereml.code_generators import GeneratesCode
 
 
 class Pipeline(GeneratesCode):
@@ -51,6 +51,20 @@ class Pipeline(GeneratesCode):
 
         raise AssertionError('item MUST be an integer, a string or a slice')
 
+    @property
+    def dtype(self):
+        """
+        Get dtype of operators
+        :return:
+        """
+        dtypes = [getattr(step, 'dtype', 'float') for step in self.steps]
+
+        # if there's a single dtype, return
+        if len(set(dtypes)) == len(dtypes):
+            return dtypes[0]
+
+        return 'float'
+
     def describe(self):
         """
         Convert to string
@@ -69,7 +83,7 @@ class Pipeline(GeneratesCode):
         for step in self.steps:
             step.fit(dataset)
             dataset = step.transform(dataset)
-            self.working_size = max(self.working_size, dataset.num_inputs)
+            self.working_size = max(self.working_size, dataset.num_inputs, getattr(step, 'working_size', 0))
 
         self.dataset = dataset
         self.num_outputs = dataset.num_inputs
@@ -113,4 +127,14 @@ class Pipeline(GeneratesCode):
             'num_inputs': self.num_inputs,
             'num_outputs': self.num_outputs,
             'working_size': self.working_size
+        }
+
+    def get_template_data_cpp(self, dialect=None):
+        """
+
+        :param dialect:
+        :return:
+        """
+        return {
+            'dtype': self.dtype
         }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><testsuite name="nosetests" tests="1" errors="1" failures="0" skip="0"><testcase classname="everywhereml.tests.transplant_class.&lt;locals&gt;.C" name="test_cpp" time="2.096"><error type="subprocess.CalledProcessError" message="Command '['g++', '-w', 'main.cpp', '-o', 'main.o']' returned non-zero exit status 1."><![CDATA[Traceback (most recent call last):
+  File "/Users/simone/.pyenv/versions/3.7.3/lib/python3.7/unittest/case.py", line 59, in testPartExecutor
+    yield
+  File "/Users/simone/.pyenv/versions/3.7.3/lib/python3.7/unittest/case.py", line 615, in run
+    testMethod()
+  File "/Users/simone/PycharmProjects/everywhereml/everywhereml/tests/preprocessing/image/HOGTest.py", line 26, in test_cpp
+    self._test_cpp()
+  File "/Users/simone/PycharmProjects/everywhereml/everywhereml/tests/preprocessing/BasePreprocessingTestCase.py", line 21, in _test_cpp
+    self._test_pipeline_cpp(pipeline=pipeline, dataset=dataset)
+  File "/Users/simone/PycharmProjects/everywhereml/everywhereml/tests/BaseTestCase.py", line 51, in _test_pipeline_cpp
+    dataset=dataset
+  File "/Users/simone/PycharmProjects/everywhereml/everywhereml/tests/BaseTestCase.py", line 35, in _test_pipeline
+    output = runtime.output(tmp_folder='/Users/simone/Desktop/tmp')
+  File "/Users/simone/PycharmProjects/everywhereml/everywhereml/tests/runtime/BaseRuntime.py", line 82, in output
+    output = check_output(cmd, cwd=folder).decode('utf-8').strip()
+  File "/Users/simone/.pyenv/versions/3.7.3/lib/python3.7/subprocess.py", line 395, in check_output
+    **kwargs).stdout
+  File "/Users/simone/.pyenv/versions/3.7.3/lib/python3.7/subprocess.py", line 487, in run
+    output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['g++', '-w', 'main.cpp', '-o', 'main.o']' returned non-zero exit status 1.
+]]></error></testcase></testsuite>

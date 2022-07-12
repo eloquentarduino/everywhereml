@@ -2,7 +2,7 @@ import numpy as np
 from everywhereml.code_generators.jinja.helpers import is_list
 
 
-def to_c_array(arr, precision=9, with_parentheses=True):
+def to_c_array(arr, precision=11, with_parentheses=True):
     """
     Convert array to C format
     :param arr: list|numpy.ndarray

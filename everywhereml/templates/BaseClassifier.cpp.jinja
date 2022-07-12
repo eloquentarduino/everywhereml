@@ -10,7 +10,7 @@ class {{ class_name or this.class_name }} {
         /**
          * Predict class from features
          */
-        {{ dtype | default("int", true) }} predict(float *x) {
+        {{ dtype | default("int", true) }} predict({{ input_dtype or 'float' }} *x) {
             {{ dtype | default("int", true) }} predictedValue = 0;
             size_t startedAt = micros();
 

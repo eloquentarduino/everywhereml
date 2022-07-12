@@ -20,7 +20,7 @@
             /**
              * Random forest's tree #{{ k }}
              */
-            void tree{{ k }}(float *x, uint8_t *classIdx, float *classScore) {
+            void tree{{ k }}({{ input_dtype }} *x, uint8_t *classIdx, float *classScore) {
                 {% include './tree' %}
             }
         {% endwith %}

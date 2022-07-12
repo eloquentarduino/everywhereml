@@ -1,6 +1,9 @@
 #ifndef {{ UUID }}
 #define {{ UUID }}
 
+#include <cstring>
+
+
 namespace {{ this.name or 'Eloquent' }} {
 
     {% for i, step in enumerate(steps) %}
@@ -15,13 +18,15 @@ namespace {{ this.name or 'Eloquent' }} {
             static const uint16_t NUM_INPUTS = {{ num_inputs }};
             static const uint16_t NUM_OUTPUTS = {{ num_outputs }};
             static const uint16_t WORKING_SIZE = {{ working_size }};
-            float X[{{ working_size }}];
+            {{ dtype }} X[{{ working_size }}];
 
             /**
              * Apply pipeline to input vector
              */
-            bool transform(float *x) {
-                memcpy(X, x, sizeof(float) * {{ num_inputs }});
+            template<typename T>
+            bool transform(T *x) {
+                for (uint16_t i = 0; i < {{ num_inputs }}; i++)
+                    this->X[i] = x[i];
 
                 size_t start = micros();
                 bool isOk =
@@ -39,7 +44,7 @@ namespace {{ this.name or 'Eloquent' }} {
              */
             template<typename PrinterInterface>
             void debugTo(PrinterInterface &printer, uint8_t precision=5) {
-                printer.print(X[0]);
+                printer.print(X[0], precision);
 
                 for (uint16_t i = 1; i < {{ num_outputs }}; i++) {
                     printer.print(", ");

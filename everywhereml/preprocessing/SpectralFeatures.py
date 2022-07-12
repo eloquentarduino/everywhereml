@@ -1,7 +1,7 @@
 import re
 import numpy as np
 
-from everywhereml.code_generators.GeneratesCode import GeneratesCode
+from everywhereml.code_generators import GeneratesCode
 
 
 class SpectralFeatures(GeneratesCode):

@@ -1,7 +1,7 @@
 import numpy as np
 from itertools import product
 from scipy.stats import mode
-from everywhereml.code_generators.GeneratesCode import GeneratesCode
+from everywhereml.code_generators import GeneratesCode
 
 
 class Window(GeneratesCode):

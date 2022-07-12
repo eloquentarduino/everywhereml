@@ -1,5 +1,7 @@
 import seaborn as sns
 from sklearn.feature_selection import SelectKBest
+from umap import UMAP
+import matplotlib.pyplot as plt
 
 
 class DatasetPlotter:
@@ -46,3 +48,22 @@ class DatasetPlotter:
             feature_columns = [column for i, column in enumerate(feature_columns) if i in cols]
 
         sns.pairplot(df, hue='target_name', vars=feature_columns, **kwargs)
+
+    def umap(self, **kwargs):
+        """
+        Plot UMAP (https://umap-learn.readthedocs.io/en/latest/)
+        :return:
+        """
+        kwargs = {
+            **{'n_neighbors': 15, 'min_dist': 0.1},
+            **kwargs
+        }
+        X = UMAP(n_components=2, **kwargs).fit_transform(self.dataset.X)
+
+        ax = plt.figure().add_subplot()
+        scatter = ax.scatter(X[:, 0], X[:, 1], c=self.dataset.y)
+        ax.legend(*scatter.legend_elements(), title="Classes")
+        ax.set_xlabel('Component #1')
+        ax.set_ylabel('Component #2')
+        ax.set_title(f'UMAP of {self.dataset.name}')
+        plt.show()

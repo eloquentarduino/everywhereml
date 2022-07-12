@@ -1,0 +1,1 @@
+from everywhereml.preprocessing.image.object_detection.HogPipeline import HogPipeline

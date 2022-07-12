@@ -22,8 +22,12 @@ setup(
     'pandas',
     'seaborn',
     'scikit-learn',
+    'scikit-image',
     'Jinja2',
     'cached-property',
+    'umap-learn',
+    'umap-learn[plot]',
+    'python-slugify'
   ],
   package_data={
     'everywhereml': data

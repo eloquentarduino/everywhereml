@@ -3,7 +3,7 @@
 /**
  * Predict class label
  */
-String predictLabel(float *x) {
+String predictLabel({{ input_dtype or 'float' }} *x) {
     return getLabelOf(predict(x));
 }
 

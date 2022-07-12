@@ -10,7 +10,7 @@ class {{ class_name }} {
         /**
          * Transform input vector
          */
-        bool transform(float *x) {
+        bool transform({{ dtype or 'float' }} *x) {
             {% block transform %}
                 // @todo implement step code
             {% endblock %}

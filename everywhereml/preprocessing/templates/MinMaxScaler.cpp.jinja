@@ -3,6 +3,9 @@
 {% block transform %}
     for (uint16_t i = 0; i < {{ num_inputs }}; i++) {
         x[i] = (x[i] - offset[i]) * scale[i] + {{ offset2 }};
+
+        if (x[i] < {{ low }}) x[i] = {{ low }};
+        else if (x[i] > {{ high }}) x[i] = {{ high }};
     }
 
     return true;

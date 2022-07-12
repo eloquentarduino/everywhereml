@@ -1,7 +1,7 @@
 import numpy as np
 from everywhereml.code_generators.jinja.Environment import Environment
 from everywhereml.code_generators.jinja.FileSystemLoader import FileSystemLoader
-from everywhereml.code_generators.jinja.filters import c_shape, to_c_array, to_c_comment
+from everywhereml.code_generators.jinja.filters import c_shape, to_c_array, to_c_comment, to_variable_name
 
 
 class Jinja:
@@ -30,6 +30,8 @@ class Jinja:
         self.env.add_filter('c_shape', c_shape)
         self.env.add_filter('to_c_array', to_c_array)
         self.env.add_filter('to_c_comment', to_c_comment)
+
+        self.env.add_filter('to_variable_name', to_variable_name)
 
     def update(self, **kwargs):
         """

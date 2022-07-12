@@ -1,6 +1,7 @@
 from sklearn.base import clone
+from sklearn.model_selection import cross_val_score
 from everywhereml.data import Dataset
-from everywhereml.code_generators.GeneratesCode import GeneratesCode
+from everywhereml.code_generators import GeneratesCode
 
 
 class SklearnBaseClassifier(GeneratesCode):
@@ -63,9 +64,7 @@ class SklearnBaseClassifier(GeneratesCode):
         Get number of classes
         :return:
         """
-        assert self.dataset is not None, 'Unfitted'
-
-        return self.dataset.num_outputs
+        return self.dataset.num_outputs if self.dataset is not None else 0
 
     def get_params(self, *args, **kwargs):
         """
@@ -133,3 +132,25 @@ class SklearnBaseClassifier(GeneratesCode):
 
         return self.sklearn.score(self, dataset.X, dataset.y, **kwargs)
 
+    def cross_val_score(self, X, y=None, **kwargs):
+        """
+        Get cross validate scores
+        :param X:
+        :param y:
+        :param cv:
+        :param kwargs:
+        :return:
+        """
+        dataset = Dataset.from_XY(X, y)
+
+        return cross_val_score(self, dataset.X, dataset.y, **kwargs)
+
+    def get_template_data_cpp(self, dialect=None):
+        """
+
+        :param dialect:
+        :return:
+        """
+        return {
+            'input_dtype': 'float'
+        }
