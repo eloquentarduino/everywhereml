@@ -26,7 +26,6 @@ setup(
     'Jinja2',
     'cached-property',
     'umap-learn',
-    'umap-learn[plot]',
     'python-slugify'
   ],
   package_data={

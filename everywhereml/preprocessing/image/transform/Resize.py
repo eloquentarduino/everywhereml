@@ -46,7 +46,7 @@ class Resize(GeneratesCode):
         """
         input_shape = self.input_shape or ('?', '?')
 
-        return f'Resize(from=({input_shape[1], input_shape[0]}), to=({self.width}, {self.height}), pixformat={self.pixformat})'
+        return f'Resize(from=({input_shape[1]}, {input_shape[0]}), to=({self.width}, {self.height}), pixformat={self.pixformat})'
 
     def __call__(self, *args, **kwargs):
         """
