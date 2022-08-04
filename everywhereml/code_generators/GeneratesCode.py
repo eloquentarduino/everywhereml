@@ -98,7 +98,7 @@ class GeneratesCode:
         jinja.update(**self.get_template_data())
         jinja.update(**language_data)
         jinja.update(**kwargs)
-        jinja.update(this=self, UUID=f'UUID{id(self)}', description=str(self).split('\n'))
+        jinja.update(this=self, id=id(self), UUID=f'UUID{id(self)}', description=str(self).split('\n'))
 
         return jinja.render(self.class_name)
 

@@ -26,8 +26,12 @@ setup(
     'Jinja2',
     'cached-property',
     'umap-learn',
-    'python-slugify'
+    'python-slugify',
+    'hexdump'
   ],
+  extras_require={
+    'tf': ['tensorflow']
+  },
   package_data={
     'everywhereml': data
   },

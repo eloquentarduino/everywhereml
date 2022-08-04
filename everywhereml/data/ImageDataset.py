@@ -238,6 +238,16 @@ class ImageDataset:
 
         return self
 
+    def log_gradient(self):
+        """
+
+        :return:
+        """
+        log_images = [np.log(1 + im.astype(np.uint16)) for im in self.images]
+        gradient_images = [im[2:, 1:-1] - im[0:-2, 1:-1] + im[1:-1, 2:] - im[1:-1, :-2] for im in log_images]
+
+        return self.clone(images=gradient_images)
+
     def resize(self, new_shape, **kwargs):
         """
         Resize images to new shape
