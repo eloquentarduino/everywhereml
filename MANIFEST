@@ -3,6 +3,7 @@ setup.py
 everywhereml/__init__.py
 everywhereml/code_generators/GeneratesCode.py
 everywhereml/code_generators/__init__.py
+everywhereml/code_generators/tensorflow.py
 everywhereml/code_generators/jinja/Environment.py
 everywhereml/code_generators/jinja/FileSystemLoader.py
 everywhereml/code_generators/jinja/Jinja.py
@@ -13,6 +14,7 @@ everywhereml/code_generators/jinja/filters/c_shape.py
 everywhereml/code_generators/jinja/filters/to_c_array.py
 everywhereml/code_generators/jinja/filters/to_c_comment.py
 everywhereml/code_generators/jinja/filters/to_variable_name.py
+everywhereml/code_generators/templates/TensorFlowPorter.cpp.jinja
 everywhereml/data/Dataset.py
 everywhereml/data/ImageDataset.py
 everywhereml/data/__init__.py
