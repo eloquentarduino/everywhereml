@@ -60,6 +60,20 @@ class {{ class_name or this.class_name }} {
         uint8_t predictClass(T *input) {
             return tf.predictClass(input);
         }
+
+        /**
+         * Proxy
+         */
+        float getScoreAt(uint8_t index) {
+            return tf.getScoreAt(index);
+        }
+
+        /**
+         * Proxy
+         */
+        String getErrorMessage() {
+            return tf.getErrorMessage();
+        }
 };
 
 /**
