@@ -1,0 +1,29 @@
+{% if len(class_map) > 0 %}
+
+def predictLabel(self, x):
+    """
+    Predict class label
+    """
+    return self.getLabelOf(self.predict(x))
+
+def getLabel(self):
+    """
+    Get label of last prediction
+    """
+    return self.getLabelOf(self.last_prediction)
+
+def getLabelOf(self, idx):
+    """
+    Get label of given class
+    """
+    if idx == -1:
+        return b"ERROR"
+
+    {% for i, target_name in class_map.items() %}
+    if idx == {{ i }}:
+        return "{{ target_name }}"
+    {% endfor %}
+
+    return "UNKNOWN"
+
+{% endif %}

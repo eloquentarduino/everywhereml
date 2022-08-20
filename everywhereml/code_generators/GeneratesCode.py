@@ -1,6 +1,7 @@
 import os.path
 from os import makedirs
 from everywhereml.code_generators.jinja.Jinja import Jinja
+from everywhereml.code_generators.prettifiers.basic_python_prettifier import basic_python_prettify
 
 
 class GeneratesCode:
@@ -80,6 +81,31 @@ class GeneratesCode:
         :return:
         """
         return self.to_cpp(dialect='arduino', **kwargs)
+
+    def to_python(self, class_name=None, namespace=None, instance_name=None, dialect=None, **kwargs):
+        """
+        Generate Python code
+        :param class_name: str
+        :param namespace: str
+        :param instance_name: str
+        :param dialect: str
+        :return:
+        """
+        return basic_python_prettify(self.to_language(
+            'py',
+            class_name=class_name,
+            namespace=namespace,
+            instance_name=instance_name,
+            dialect=dialect,
+            **kwargs
+        ))
+
+    def to_micropython(self, **kwargs):
+        """
+        Generate Micropython code
+        :return:
+        """
+        return self.to_python(dialect='micro', **kwargs)
 
     def to_language(self, language, dialect=None, **kwargs):
         """

@@ -2,6 +2,7 @@ import numpy as np
 from everywhereml.code_generators.jinja.Environment import Environment
 from everywhereml.code_generators.jinja.FileSystemLoader import FileSystemLoader
 from everywhereml.code_generators.jinja.filters import c_shape, to_c_array, to_c_comment, to_variable_name
+from everywhereml.code_generators.jinja.filters import to_py_comment, to_py_list
 
 
 class Jinja:
@@ -16,7 +17,7 @@ class Jinja:
         :param dialect:
         """
         self.loader = FileSystemLoader(base_folder, language=language, dialect=dialect)
-        self.env = Environment(loader=self.loader)
+        self.env = Environment(loader=self.loader, extensions=['jinja2_workarounds.MultiLineInclude'])
         self.data = {}
 
         self.env.add_global('enumerate', enumerate)
@@ -30,6 +31,9 @@ class Jinja:
         self.env.add_filter('c_shape', c_shape)
         self.env.add_filter('to_c_array', to_c_array)
         self.env.add_filter('to_c_comment', to_c_comment)
+
+        self.env.add_filter('to_py_comment', to_py_comment)
+        self.env.add_filter('to_py_list', to_py_list)
 
         self.env.add_filter('to_variable_name', to_variable_name)
 

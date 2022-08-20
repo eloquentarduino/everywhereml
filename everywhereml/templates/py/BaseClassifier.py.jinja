@@ -1,0 +1,42 @@
+from time import tick_us, tick_diff
+
+
+class {{ class_name or this.class_name }}:
+    """
+    {{ str(this) | to_py_comment }}
+    """
+
+    def __init__(self):
+        """
+        Constructor
+        """
+        self.latency = 0
+        self.last_prediction = 0
+        {% filter indent(4) %}
+        {% block init %}{% endblock %}
+        {% endfilter %}
+
+    def predict(self, x):
+        """
+        Predict output from input vector
+        """
+        predicted_value = 0
+        started_at = tick_us()
+
+        {% filter indent(4) %}
+        {% block predict %}{% endblock %}
+        {% endfilter %}
+
+        self.latency = tick_diff(tick_us(), started_at)
+        self.last_prediction = predicted_value
+
+        return self.last_prediction
+
+    {% include 'class_map' indent content %}
+    {% include 'latency' indent content %}
+    {% block functions %}{% endblock %}
+
+
+{% if instance_name %}
+{{ class_name or this.class_name }} {{ instance_name }}
+{% endif %}

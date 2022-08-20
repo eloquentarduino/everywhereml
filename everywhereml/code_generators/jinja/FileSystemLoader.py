@@ -17,7 +17,7 @@ class FileSystemLoader(Base):
         """
         base_folder = Path(__file__).absolute().parent.parent.parent
         super(FileSystemLoader, self).__init__(base_folder, **kwargs)
-        self.template_folder = template_folder.replace('everywhereml/', '') + '/templates'
+        self.template_folder = os.path.join('templates', template_folder.replace('everywhereml/', ''))
         self.language = language
         self.dialect = dialect
 
@@ -28,21 +28,24 @@ class FileSystemLoader(Base):
         :param template:
         :return:
         """
+        dialect = self.dialect or "dialect"
         template = template.replace(os.path.sep, '/')
-        parent_folder = self.template_folder.replace(f'{template}/', '')
-        attempts = [
-            f'{self.template_folder}/{self.language}/{self.dialect or "dialect"}/{template}.jinja',
-            f'{self.template_folder}/{self.language}/{template}.{self.dialect or "dialect"}.jinja',
-            f'{self.template_folder}/{self.language}/{template}.jinja',
-            f'{self.template_folder}/{template}.{self.language}.jinja',
-            f'{self.template_folder}/{template}.jinja',
-            f'{parent_folder}/{template}.{self.language}.{self.dialect or "dialect"}.jinja',
-            f'{parent_folder}/{template}.{self.language}.jinja',
-            f'{parent_folder}/{template}.jinja',
-            f'{template}.{self.language}.{self.dialect or "dialect"}.jinja',
-            f'{template}.{self.language}.jinja',
-            f'{template}.jinja'
-        ]
+        folder = self.template_folder.replace(f'{template}/', '')
+        attempts = []
+
+        while len(folder):
+            attempts += [
+                f'{folder}/{self.language}/{dialect}/{template}.{self.language}.{dialect}.jinja',
+                f'{folder}/{self.language}/{dialect}/{template}.{self.language}.jinja',
+                f'{folder}/{self.language}/{dialect}/{template}.jinja',
+                f'{folder}/{self.language}/{template}.{self.language}.{dialect}.jinja',
+                f'{folder}/{self.language}/{template}.{self.language}.jinja',
+                f'{folder}/{self.language}/{template}.jinja',
+                f'{folder}/{template}.{self.language}.{dialect}.jinja',
+                f'{folder}/{template}.{self.language}.jinja',
+                f'{folder}/{template}.jinja',
+            ]
+            folder = os.path.dirname(folder)
 
         for source in attempts:
             try:
@@ -50,7 +53,4 @@ class FileSystemLoader(Base):
             except TemplateNotFound:
                 pass
 
-        print('attempts')
-        print(attempts)
-
-        raise TemplateNotFound(template)
+        raise TemplateNotFound(f'{template} in {attempts}')
