@@ -27,7 +27,8 @@ setup(
     'cached-property',
     'umap-learn',
     'python-slugify',
-    'hexdump'
+    'hexdump',
+    'jinja2_workaround'
   ],
   extras_require={
     'tf': ['tensorflow']

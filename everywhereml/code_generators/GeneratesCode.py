@@ -39,24 +39,6 @@ class GeneratesCode:
         """
         raise NotImplementedError('get_template_data()')
 
-    def to_cpp_file(self, filename, **kwargs):
-        """
-        Save C++ code to file
-        :param filename:
-        :param kwargs:
-        :return:
-        """
-        return self.to_language_file('cpp', filename, **kwargs)
-
-    def to_arduino_file(self, filename, **kwargs):
-        """
-        Save C++/Arduino code to file
-        :param filename:
-        :param kwargs:
-        :return:
-        """
-        return self.to_language_file('cpp', filename, dialect='arduino', **kwargs)
-
     def to_cpp(self, class_name=None, namespace=None, instance_name=None, dialect=None, **kwargs):
         """
         Generate C++ code
@@ -75,6 +57,15 @@ class GeneratesCode:
             **kwargs
         )
 
+    def to_cpp_file(self, filename, **kwargs):
+        """
+        Save C++ code to file
+        :param filename:
+        :param kwargs:
+        :return:
+        """
+        return self.to_file(filename, self.to_cpp(**kwargs))
+
     def to_arduino(self, **kwargs):
         """
         Generate C++/Arduino code
@@ -82,11 +73,19 @@ class GeneratesCode:
         """
         return self.to_cpp(dialect='arduino', **kwargs)
 
-    def to_python(self, class_name=None, namespace=None, instance_name=None, dialect=None, **kwargs):
+    def to_arduino_file(self, filename, **kwargs):
+        """
+        Save C++/Arduino code to file
+        :param filename:
+        :param kwargs:
+        :return:
+        """
+        return self.to_file(filename, self.to_arduino(**kwargs))
+
+    def to_python(self, class_name=None, instance_name=None, dialect=None, **kwargs):
         """
         Generate Python code
         :param class_name: str
-        :param namespace: str
         :param instance_name: str
         :param dialect: str
         :return:
@@ -94,7 +93,6 @@ class GeneratesCode:
         return basic_python_prettify(self.to_language(
             'py',
             class_name=class_name,
-            namespace=namespace,
             instance_name=instance_name,
             dialect=dialect,
             **kwargs
@@ -106,6 +104,24 @@ class GeneratesCode:
         :return:
         """
         return self.to_python(dialect='micro', **kwargs)
+
+    def to_python_file(self, filename, **kwargs):
+        """
+        Save Python code to file
+        :param filename:
+        :param kwargs:
+        :return:
+        """
+        return self.to_file(filename, self.to_python(**kwargs))
+
+    def to_micropython_file(self, filename, **kwargs):
+        """
+        Save Micropython code to file
+        :param filename:
+        :param kwargs:
+        :return:
+        """
+        return self.to_python_file(filename, dialect='micro', **kwargs)
 
     def to_language(self, language, dialect=None, **kwargs):
         """
@@ -141,6 +157,21 @@ class GeneratesCode:
 
         with open(filename, 'w', encoding='utf-8') as file:
             contents = self.to_language(language=language, **kwargs)
+            file.write(contents)
+
+            return contents
+
+    def to_file(self, filename, contents):
+        """
+        Save generated code to file
+        :param language:
+        :param contents:
+        :return:
+        """
+        if os.path.dirname(filename):
+            makedirs(os.path.dirname(filename), 0o777, exist_ok=True)
+
+        with open(filename, 'w', encoding='utf-8') as file:
             file.write(contents)
 
             return contents

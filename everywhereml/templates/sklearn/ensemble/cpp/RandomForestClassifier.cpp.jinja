@@ -1,4 +1,4 @@
-{% extends 'templates/BaseClassifier' %}
+{% extends 'BaseClassifier' %}
 
 {% block predict %}
     uint16_t votes[{{ this.num_outputs }}] = { 0 };
@@ -10,7 +10,7 @@
         votes[classIdx] += classScore;
     {% endfor %}
 
-    {% include 'templates/vote' %}
+    {% include 'vote' indent content %}
 {% endblock %}
 
 {% block protected %}
@@ -21,7 +21,7 @@
              * Random forest's tree #{{ k }}
              */
             void tree{{ k }}({{ input_dtype }} *x, uint8_t *classIdx, float *classScore) {
-                {% include './tree' %}
+                {% include 'tree' indent content %}
             }
         {% endwith %}
     {% endfor %}

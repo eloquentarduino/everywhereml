@@ -1,18 +1,18 @@
 from distutils.core import setup
 
-packages=["everywhereml", "everywhereml.plot", "everywhereml.tests", "everywhereml.tests.runtime", "everywhereml.tests.sklearn", "everywhereml.tests.sklearn.ensemble", "everywhereml.tests.templates", "everywhereml.tests.preprocessing", "everywhereml.tests.preprocessing.image", "everywhereml.tests.data", "everywhereml.sklearn", "everywhereml.sklearn.tree", "everywhereml.sklearn.tree.templates", "everywhereml.sklearn.ensemble", "everywhereml.sklearn.ensemble.templates", "everywhereml.get_started", "everywhereml.code_generators", "everywhereml.code_generators.jinja", "everywhereml.code_generators.jinja.filters", "everywhereml.code_generators.templates", "everywhereml.templates", "everywhereml.templates.cpp", "everywhereml.preprocessing", "everywhereml.preprocessing.image", "everywhereml.preprocessing.image.object_detection", "everywhereml.preprocessing.image.object_detection.templates", "everywhereml.preprocessing.image.templates", "everywhereml.preprocessing.image.transform", "everywhereml.preprocessing.image.transform.templates", "everywhereml.preprocessing.templates", "everywhereml.data", "everywhereml.data.collect"]
-data=["tests/templates/pipeline.cpp.jinja", "tests/templates/classifier.cpp.jinja", "sklearn/tree/templates/tree.cpp.jinja", "sklearn/tree/templates/DecisionTreeClassifier.cpp.jinja", "sklearn/ensemble/templates/tree.cpp.jinja", "sklearn/ensemble/templates/RandomForestClassifier.cpp.jinja", "code_generators/templates/TensorFlowPorter.cpp.jinja", "templates/latency.cpp.jinja", "templates/vote.cpp.jinja", "templates/class_map.cpp.jinja", "templates/BaseClassifier.cpp.jinja", "preprocessing/image/object_detection/templates/HogPipeline.cpp.jinja", "preprocessing/image/object_detection/templates/BaseObjectDetectionPipeline.cpp.jinja", "preprocessing/image/templates/BaseImageStep.cpp.jinja", "preprocessing/image/templates/HOG.cpp.jinja", "preprocessing/image/templates/LBP.cpp.jinja", "preprocessing/image/transform/templates/Resize.cpp.jinja", "preprocessing/templates/Step.cpp.jinja", "preprocessing/templates/Pipeline.cpp.jinja", "preprocessing/templates/SpectralFeatures.cpp.jinja", "preprocessing/templates/Window.cpp.jinja", "preprocessing/templates/MinMaxScaler.cpp.jinja"]
+packages=["everywhereml", "everywhereml.plot", "everywhereml.tests", "everywhereml.tests.runtime", "everywhereml.tests.sklearn", "everywhereml.tests.sklearn.ensemble", "everywhereml.tests.templates", "everywhereml.tests.preprocessing", "everywhereml.tests.preprocessing.image", "everywhereml.tests.data", "everywhereml.sklearn", "everywhereml.sklearn.tree", "everywhereml.sklearn.ensemble", "everywhereml.get_started", "everywhereml.code_generators", "everywhereml.code_generators.jinja", "everywhereml.code_generators.jinja.filters", "everywhereml.code_generators.prettifiers", "everywhereml.code_generators.templates", "everywhereml.templates", "everywhereml.templates.py", "everywhereml.templates.sklearn", "everywhereml.templates.sklearn.tree", "everywhereml.templates.sklearn.tree.cpp", "everywhereml.templates.sklearn.ensemble", "everywhereml.templates.sklearn.ensemble.py", "everywhereml.templates.sklearn.ensemble.py.micro", "everywhereml.templates.sklearn.ensemble.cpp", "everywhereml.templates.cpp", "everywhereml.preprocessing", "everywhereml.preprocessing.image", "everywhereml.preprocessing.image.object_detection", "everywhereml.preprocessing.image.object_detection.templates", "everywhereml.preprocessing.image.templates", "everywhereml.preprocessing.image.transform", "everywhereml.preprocessing.image.transform.templates", "everywhereml.preprocessing.templates", "everywhereml.data", "everywhereml.data.collect"]
+data=["tests/templates/pipeline.cpp.jinja", "tests/templates/classifier.cpp.jinja", "code_generators/templates/TensorFlowPorter.cpp.jinja", "templates/py/vote.py.jinja", "templates/py/latency.py.jinja", "templates/py/class_map.py.jinja", "templates/py/BaseClassifier.py.jinja", "templates/sklearn/tree/cpp/tree.cpp.jinja", "templates/sklearn/tree/cpp/DecisionTreeClassifier.cpp.jinja", "templates/sklearn/ensemble/py/micro/RandomForestClassifier.py.micro.jinja", "templates/sklearn/ensemble/py/micro/tree.py.jinja", "templates/sklearn/ensemble/cpp/tree.cpp.jinja", "templates/sklearn/ensemble/cpp/RandomForestClassifier.cpp.jinja", "templates/cpp/latency.cpp.jinja", "templates/cpp/vote.cpp.jinja", "templates/cpp/class_map.cpp.jinja", "templates/cpp/BaseClassifier.cpp.jinja", "preprocessing/image/object_detection/templates/HogPipeline.cpp.jinja", "preprocessing/image/object_detection/templates/BaseObjectDetectionPipeline.cpp.jinja", "preprocessing/image/templates/BaseImageStep.cpp.jinja", "preprocessing/image/templates/HOG.cpp.jinja", "preprocessing/image/templates/LBP.cpp.jinja", "preprocessing/image/transform/templates/Resize.cpp.jinja", "preprocessing/templates/Step.cpp.jinja", "preprocessing/templates/Pipeline.cpp.jinja", "preprocessing/templates/SpectralFeatures.cpp.jinja", "preprocessing/templates/Window.cpp.jinja", "preprocessing/templates/MinMaxScaler.cpp.jinja"]
 
 setup(
   name='everywhereml',
   packages=packages,
-  version='0.0.7',
+  version='0.1.0',
   license='MIT',
   description='Train ML in Python, run everywhere',
   author='Simone Salerno',
   author_email='support@eloquentarduino.com',
   url='https://github.com/eloquentarduino/everywhereml',
-  download_url='https://github.com/eloquentarduino/everywhereml/blob/master/dist/everywhereml-0.0.7.tar.gz?raw=true',
+  download_url='https://github.com/eloquentarduino/everywhereml/blob/master/dist/everywhereml-0.1.0.tar.gz?raw=true',
   keywords=[
     'ML',
     'machine learning'
@@ -27,7 +27,8 @@ setup(
     'cached-property',
     'umap-learn',
     'python-slugify',
-    'hexdump'
+    'hexdump',
+    'jinja2_workaround'
   ],
   extras_require={
     'tf': ['tensorflow']

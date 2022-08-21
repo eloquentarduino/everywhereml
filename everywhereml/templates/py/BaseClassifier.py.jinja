@@ -1,4 +1,10 @@
-from time import tick_us, tick_diff
+try:
+    from time import ticks_us, ticks_diff
+except ImportError:
+    from time import time_ns
+
+    def ticks_us(): return int(time_ns() * 1000)
+    def ticks_diff(a, b): return a - b
 
 
 class {{ class_name or this.class_name }}:
@@ -11,7 +17,7 @@ class {{ class_name or this.class_name }}:
         Constructor
         """
         self.latency = 0
-        self.last_prediction = 0
+        self.predicted_value = -1
         {% filter indent(4) %}
         {% block init %}{% endblock %}
         {% endfilter %}
@@ -20,17 +26,16 @@ class {{ class_name or this.class_name }}:
         """
         Predict output from input vector
         """
-        predicted_value = 0
-        started_at = tick_us()
+        self.predicted_value = -1
+        started_at = ticks_us()
 
         {% filter indent(4) %}
         {% block predict %}{% endblock %}
         {% endfilter %}
 
-        self.latency = tick_diff(tick_us(), started_at)
-        self.last_prediction = predicted_value
+        self.latency = ticks_diff(ticks_us(), started_at)
 
-        return self.last_prediction
+        return self.predicted_value
 
     {% include 'class_map' indent content %}
     {% include 'latency' indent content %}
