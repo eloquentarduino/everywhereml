@@ -130,7 +130,7 @@ class Sketch:
         cli.exec('upload', '--verify', '--fqbn', self.fqbn, '--port', self.port, *args, cwd=self.path)
 
         self.output = cli.any_output
-        self.is_successful = re.search(r'Leaving...|OK', self.output) is not None
+        self.is_successful = re.search(r'leaving...|ok|success', self.output.lower()) is not None
         self.stats['upload_time'] = cli.exec_time
 
         return self
