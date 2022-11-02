@@ -1,4 +1,4 @@
-from collections import Iterable
+from collections.abc import Iterable
 
 
 def is_list(x):
