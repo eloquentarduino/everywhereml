@@ -6,13 +6,13 @@ data=["tests/templates/pipeline.cpp.jinja", "tests/templates/classifier.cpp.jinj
 setup(
   name='everywhereml',
   packages=packages,
-  version='0.2.4',
+  version='0.2.5',
   license='MIT',
   description='Train ML in Python, run everywhere',
   author='Simone Salerno',
   author_email='support@eloquentarduino.com',
   url='https://github.com/eloquentarduino/everywhereml',
-  download_url='https://github.com/eloquentarduino/everywhereml/blob/master/dist/everywhereml-0.2.4.tar.gz?raw=true',
+  download_url='https://github.com/eloquentarduino/everywhereml/blob/master/dist/everywhereml-0.2.5.tar.gz?raw=true',
   keywords=[
     'ML',
     'machine learning'
@@ -28,7 +28,9 @@ setup(
     'umap-learn',
     'python-slugify',
     'hexdump',
-    'jinja2_workarounds'
+    'jinja2_workarounds',
+    'requests',
+    'pySerial'
   ],
   extras_require={
     'tf': ['tensorflow']
