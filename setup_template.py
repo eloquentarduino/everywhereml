@@ -28,7 +28,9 @@ setup(
     'umap-learn',
     'python-slugify',
     'hexdump',
-    'jinja2_workarounds'
+    'jinja2_workarounds',
+    'requests',
+    'pySerial'
   ],
   extras_require={
     'tf': ['tensorflow']
