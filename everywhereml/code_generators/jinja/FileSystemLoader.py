@@ -17,7 +17,7 @@ class FileSystemLoader(Base):
         """
         base_folder = Path(__file__).absolute().parent.parent.parent
         super(FileSystemLoader, self).__init__(base_folder, **kwargs)
-        self.template_folder = os.path.join('templates', template_folder.replace('everywhereml/', ''))
+        self.template_folder = template_folder.replace('everywhereml/', 'templates/')
         self.language = language
         self.dialect = dialect
 
