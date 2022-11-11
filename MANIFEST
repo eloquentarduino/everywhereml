@@ -49,9 +49,6 @@ everywhereml/preprocessing/image/__init__.py
 everywhereml/preprocessing/image/object_detection/BaseObjectDetectionPipeline.py
 everywhereml/preprocessing/image/object_detection/HogPipeline.py
 everywhereml/preprocessing/image/object_detection/__init__.py
-everywhereml/preprocessing/image/object_detection/templates/BaseObjectDetectionPipeline.cpp.jinja
-everywhereml/preprocessing/image/object_detection/templates/HogPipeline.cpp.jinja
-everywhereml/preprocessing/image/object_detection/templates/__init__.py
 everywhereml/preprocessing/image/transform/Grayscale.py
 everywhereml/preprocessing/image/transform/Resize.py
 everywhereml/preprocessing/image/transform/__init__.py
@@ -76,6 +73,8 @@ everywhereml/templates/preprocessing/cpp/Window.cpp.jinja
 everywhereml/templates/preprocessing/image/cpp/BaseImageStep.cpp.jinja
 everywhereml/templates/preprocessing/image/cpp/HOG.cpp.jinja
 everywhereml/templates/preprocessing/image/cpp/LBP.cpp.jinja
+everywhereml/templates/preprocessing/image/object_detection/cpp/BaseObjectDetectionPipeline.cpp.jinja
+everywhereml/templates/preprocessing/image/object_detection/cpp/HogPipeline.cpp.jinja
 everywhereml/templates/py/BaseClassifier.py.jinja
 everywhereml/templates/py/class_map.py.jinja
 everywhereml/templates/py/latency.py.jinja
