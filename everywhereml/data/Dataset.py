@@ -261,7 +261,7 @@ class Dataset:
 
         return self.replace(**dataset.__dict__)
 
-    def split(self, train_size=None, test_size=None):
+    def split(self, train_size=None, test_size=None, **kwargs):
         """
         Split into train/test
         :param train_size:
@@ -270,7 +270,7 @@ class Dataset:
         """
         assert (train_size is None or 0 < train_size < 1) or (test_size is None or 0 < test_size < 1), 'train or test size MUST be in the range [0, 1] exclusive'
 
-        X_train, X_test, y_train, y_test = train_test_split(self.X, self.y, train_size=train_size, test_size=test_size)
+        X_train, X_test, y_train, y_test = train_test_split(self.X, self.y, train_size=train_size, test_size=test_size, **kwargs)
 
         return (
             self.clone(name='%s Train' % self.name, X=X_train, y=y_train),
