@@ -63,6 +63,9 @@ everywhereml/templates/cpp/BaseClassifier.cpp.jinja
 everywhereml/templates/cpp/class_map.cpp.jinja
 everywhereml/templates/cpp/latency.cpp.jinja
 everywhereml/templates/cpp/vote.cpp.jinja
+everywhereml/templates/js/BaseClassifier.js.jinja
+everywhereml/templates/js/class_map.js.jinja
+everywhereml/templates/js/vote.js.jinja
 everywhereml/templates/preprocessing/cpp/MinMaxScaler.cpp.jinja
 everywhereml/templates/preprocessing/cpp/Pipeline.cpp.jinja
 everywhereml/templates/preprocessing/cpp/SpectralFeatures.cpp.jinja
@@ -84,6 +87,10 @@ everywhereml/templates/sklearn/ensemble/py/micro/RandomForestClassifier.py.micro
 everywhereml/templates/sklearn/ensemble/py/micro/tree.py.jinja
 everywhereml/templates/sklearn/tree/cpp/DecisionTreeClassifier.cpp.jinja
 everywhereml/templates/sklearn/tree/cpp/tree.cpp.jinja
+everywhereml/templates/xgboost/cpp/XGBClassifier.jinja
+everywhereml/templates/xgboost/cpp/tree.jinja
+everywhereml/templates/xgboost/js/XGBClassifier.jinja
+everywhereml/templates/xgboost/js/tree.jinja
 everywhereml/tests/BaseTestCase.py
 everywhereml/tests/__init__.py
 everywhereml/tests/data/__init__.py
@@ -103,3 +110,7 @@ everywhereml/tests/sklearn/ensemble/RandomForestClassifierTest.py
 everywhereml/tests/sklearn/ensemble/__init__.py
 everywhereml/tests/templates/classifier.cpp.jinja
 everywhereml/tests/templates/pipeline.cpp.jinja
+everywhereml/tests/xgboost/XGBClassifierTest.py
+everywhereml/tests/xgboost/__init__.py
+everywhereml/xgboost/XGBClassifier.py
+everywhereml/xgboost/__init__.py
