@@ -123,6 +123,23 @@ class GeneratesCode:
         """
         return self.to_python_file(filename, dialect='micro', **kwargs)
 
+    def to_js(self, **kwargs):
+        """
+
+        :param kwargs:
+        :return:
+        """
+        return self.to_language('js', **kwargs)
+
+    def to_js_file(self, filename, **kwargs):
+        """
+
+        :param filename:
+        :param kwargs:
+        :return:
+        """
+        return self.to_file(filename, self.to_js(**kwargs))
+
     def to_language(self, language, dialect=None, **kwargs):
         """
         Generate code in given language

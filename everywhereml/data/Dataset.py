@@ -40,8 +40,8 @@ class Dataset:
             name=name or 'Dataset',
             feature_names=feature_names,
             target_names=target_names,
-            X=X,
-            y=y if y is not None else np.zeros(len(X))
+            X=np.asarray(X, dtype=float),
+            y=np.asarray(y, dtype=int) if y is not None else np.zeros(len(X))
         )
 
     @staticmethod

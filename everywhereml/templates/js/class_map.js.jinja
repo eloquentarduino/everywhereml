@@ -1,0 +1,33 @@
+{% if len(class_map) > 0 %}
+
+/**
+ * Predict class label
+ */
+predictLabel(x) {
+    return this.getLabelOf(this.predict(x));
+}
+
+/**
+ * Get label of last prediction
+ */
+getLabel() {
+    return this.getLabelOf(this.lastPrediction);
+}
+
+/**
+ * Get label of given class
+ */
+getLabelOf(idx) {
+    switch (idx) {
+        case -1:
+            return "ERROR";
+        {% for i, target_name in class_map.items() %}
+            case {{ i }}:
+                return "{{ target_name }}";
+        {% endfor %}
+        default:
+            return "UNKNOWN";
+    }
+}
+
+{% endif %}
