@@ -1,0 +1,20 @@
+Metadata-Version: 1.1
+Name: everywhereml
+Version: 0.2.10
+Summary: Train ML in Python, run everywhere
+Home-page: https://github.com/eloquentarduino/everywhereml
+Author: Simone Salerno
+Author-email: support@eloquentarduino.com
+License: MIT
+Download-URL: https://github.com/eloquentarduino/everywhereml/blob/master/dist/everywhereml-0.2.10.tar.gz?raw=true
+Description: UNKNOWN
+Keywords: ML,machine learning
+Platform: UNKNOWN
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Code Generators
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6

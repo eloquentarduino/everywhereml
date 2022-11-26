@@ -1,0 +1,29 @@
+{% extends 'BaseClassifier' %}
+
+{% block predict %}
+    uint16_t votes[{{ this.num_outputs }}] = { 0 };
+    uint8_t classIdx = 0;
+    float classScore = 0;
+
+    {% for k, tree in enumerate(trees) %}
+        tree{{ k }}(x, &classIdx, &classScore);
+        votes[classIdx] += classScore;
+    {% endfor %}
+
+    {% include 'vote' indent content %}
+{% endblock %}
+
+{% block protected %}
+
+    {% for k, tree in enumerate(trees) %}
+        {% with i = 0, left = tree['left'], right = tree['right'], features = tree['features'], thresholds = tree['thresholds'], classes = tree['classes'] %}
+            /**
+             * Random forest's tree #{{ k }}
+             */
+            void tree{{ k }}({{ input_dtype }} *x, uint8_t *classIdx, float *classScore) {
+                {% include 'tree' indent content %}
+            }
+        {% endwith %}
+    {% endfor %}
+
+{% endblock %}

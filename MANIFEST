@@ -26,7 +26,6 @@ everywhereml/code_generators/jinja/filters/to_py_list.py
 everywhereml/code_generators/jinja/filters/to_variable_name.py
 everywhereml/code_generators/prettifiers/__init__.py
 everywhereml/code_generators/prettifiers/basic_python_prettifier.py
-everywhereml/code_generators/templates/TensorFlowPorter.cpp.jinja
 everywhereml/data/Dataset.py
 everywhereml/data/ImageDataset.py
 everywhereml/data/__init__.py
@@ -60,6 +59,7 @@ everywhereml/sklearn/tree/DecisionTreeClassifier.py
 everywhereml/sklearn/tree/__init__.py
 everywhereml/templates/__init__.py
 everywhereml/templates/cpp/BaseClassifier.cpp.jinja
+everywhereml/templates/cpp/TensorFlowPorter.cpp.jinja
 everywhereml/templates/cpp/class_map.cpp.jinja
 everywhereml/templates/cpp/latency.cpp.jinja
 everywhereml/templates/cpp/vote.cpp.jinja

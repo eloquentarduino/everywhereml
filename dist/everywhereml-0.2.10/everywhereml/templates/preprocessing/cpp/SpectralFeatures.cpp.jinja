@@ -1,0 +1,122 @@
+{% extends './Step' %}
+
+{% block transform %}
+    // spectral features
+    uint16_t idx = 0;
+
+    for (uint16_t k = 0; k < {{ num_inputs }}; k++) {
+        float minimum = 9999999;
+        float maximum = -9999999;
+        float abs_minimum = 999999;
+        float abs_maximum = 0;
+        float mean = 0;
+        float abs_energy = 0;
+        float mean_abs_change = 0;
+        float cid_ce = 0;
+        float xi_prev = x[k];
+
+        // first-order features
+        for (uint16_t i = k; i < {{ window_length * num_inputs }}; i += {{ num_inputs }}) {
+            float xi = x[i];
+            float abs_xi = abs(xi);
+            float xi_prev2 = (i >= k + {{ 2 * num_inputs }}) ? x[i - {{ 2 * num_inputs }}] : xi;
+
+            float xi2 = xi * xi;
+            float diff = xi - xi_prev;
+
+            // start of features
+            minimum = xi < minimum ? xi : minimum;
+            maximum = xi > maximum ? xi : maximum;
+            abs_minimum = abs_xi < abs_minimum ? abs_xi : abs_minimum;
+            abs_maximum = abs_xi > abs_maximum ? abs_xi : abs_maximum;
+            mean += xi;
+            abs_energy += xi2;
+            mean_abs_change += abs(diff);
+            cid_ce += diff * diff;
+            xi_prev = xi;
+        }
+
+        mean /= {{ window_length }};
+        abs_energy /= {{ window_length }};
+        mean_abs_change /= {{ window_length }};
+        cid_ce /= {{ window_length }};
+
+        buffer[idx++] = maximum;
+        buffer[idx++] = minimum;
+        buffer[idx++] = abs_maximum;
+        buffer[idx++] = abs_minimum;
+        buffer[idx++] = mean;
+        buffer[idx++] = abs_energy;
+        buffer[idx++] = mean_abs_change;
+        buffer[idx++] = cid_ce;
+
+        {% if order == 2 %}
+            // second-order features
+            float xi_mean_prev = x[k] - mean;
+            float count_above_mean = 0;
+            float count_below_mean = 0;
+            float first_position_of_max = {{ window_length * num_inputs }};
+            float first_position_of_min = {{ window_length * num_inputs }};
+            float max_count = 0;
+            float min_count = 0;
+            float max_thresh = maximum - abs(maximum) * 0.02;
+            float min_thresh = minimum + abs(minimum) * 0.02;
+            float var = 0;
+            float std = 0;
+            float kurtosis = 0;
+            float skew = 0;
+            float has_large_std = 0;
+            float variation_coefficient = 0;
+
+            for (uint16_t i = k; i < {{ window_length * num_inputs }}; i += {{ num_inputs }}) {
+                float xi = x[i];
+                float xi_mean = xi - mean;
+                float var_i = xi_mean * xi_mean;
+
+                // start of features
+                var += var_i;
+                count_above_mean += xi_mean >  {{ eps }} ? 1 : 0;
+                count_below_mean += xi_mean < -{{ eps }} ? 1 : 0;
+                first_position_of_max = (i < first_position_of_max && abs(xi - maximum) < {{ eps }}) ? i : first_position_of_max;
+                first_position_of_min = (i < first_position_of_min && abs(xi - minimum) < {{ eps }}) ? i : first_position_of_min;
+
+                if (var_i > {{ eps }}) {
+                    skew += var_i * xi_mean;
+                    kurtosis += var_i * var_i;
+                }
+                if (xi > max_thresh) { max_count += 1; }
+                if (xi < min_thresh) { min_count += 1; }
+
+                xi_mean_prev = xi_mean;
+            }
+
+            var /= {{ window_length }};
+            std = sqrt(var);
+            first_position_of_max = int((first_position_of_max - k) / {{ window_length }});
+            first_position_of_min = int((first_position_of_min - k) / {{ window_length }});
+            skew = var > {{ eps }} ? skew / pow(var, 1.5) : 0;
+            kurtosis = var > {{ eps }} ? kurtosis / (var * var) : 0;
+            has_large_std = std > 0.25 * (maximum - minimum);
+            variation_coefficient = (mean > {{ eps }}) ? var / mean : 0;
+
+            buffer[idx++] = std;
+            buffer[idx++] = var;
+            buffer[idx++] = count_above_mean;
+            buffer[idx++] = count_below_mean;
+            buffer[idx++] = first_position_of_max;
+            buffer[idx++] = first_position_of_min;
+            buffer[idx++] = max_count;
+            buffer[idx++] = min_count;
+            buffer[idx++] = has_large_std;
+            buffer[idx++] = skew;
+            buffer[idx++] = kurtosis;
+            buffer[idx++] = variation_coefficient;
+        {% endif %}
+    }
+
+    memcpy(x, buffer, {{ num_features * num_inputs }} * sizeof(float));
+{% endblock %}
+
+{% block protected %}
+    float buffer[{{ num_inputs * num_features }}];
+{% endblock %}

@@ -1,0 +1,77 @@
+#ifndef {{ UUID }}
+#define {{ UUID }}
+
+{% for step in steps %}
+    {{ step.to_cpp(instance_name=None, namespace=None, class_name=step.class_name, dialect=dialect) }}
+{% endfor %}
+
+/**
+ {{ str(this) | to_c_comment }}
+ */
+class {{ class_name or name }} {
+    public:
+        static const size_t NUM_INPUTS = {{ num_inputs }};
+        static const size_t NUM_OUTPUTS = {{ num_outputs }};
+        static const size_t WORKING_SIZE = {{ working_size }};
+        float features[{{ working_size }}];
+
+        /**
+         * Extract features from input image
+         */
+        template<typename T>
+        bool transform(T *input) {
+            time_t start = micros();
+            ok = true;
+
+            preprocess(input);
+
+            {% for i, step in enumerate(steps) %}
+                {% if i == 0 %}
+                    ok = ok && {{ step.name | to_variable_name }}.transform(input, features);
+                {% else %}
+                    ok = ok && {{ step.name | to_variable_name }}.transform(features, features);
+                {% endif %}
+            {% endfor %}
+
+            latency = micros() - start;
+
+            return ok;
+        }
+
+        /**
+         * Debug output feature vector
+         */
+        template<typename PrinterInterface>
+        void debugTo(PrinterInterface &printer, uint8_t precision=5) {
+            printer.print(features[0], precision);
+
+            for (uint16_t i = 1; i < {{ num_outputs }}; i++) {
+                printer.print(", ");
+                printer.print(features[i], precision);
+            }
+
+            printer.print('\n');
+        }
+
+        {% include 'latency' %}
+
+    protected:
+        bool ok;
+        time_t latency;
+        {% for step in steps %}
+            {{ step.class_name }} {{ step.name | to_variable_name }};
+        {% endfor %}
+
+        template<typename T>
+        void preprocess(T *input) {
+            {% for transform in transforms %}
+                {{ transform.to_cpp(dialect=dialect) }}
+            {% endfor %}
+        }
+};
+
+{% if instance_name %}
+static {{ class_name or name }} {{ instance_name }};
+{% endif %}
+
+#endif

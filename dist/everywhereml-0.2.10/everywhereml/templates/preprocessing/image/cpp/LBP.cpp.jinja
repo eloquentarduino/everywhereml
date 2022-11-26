@@ -1,0 +1,59 @@
+{% extends 'preprocessing/templates/Step' %}
+
+{% block transform %}
+    uint16_t i = 0;
+
+    // reset histogram
+    for (uint16_t i = 0; i < {{ bins }}; i++)
+        hist[i] = 0;
+
+    // compute patterns
+    for (uint16_t _y = {{ r }}; _y < {{ height - r }}; _y += {{ spacing }}) {
+        const uint16_t rowOffset = _y * {{ width }};
+        const uint16_t rowOffsetBefore = rowOffset - {{ width }};
+        const uint16_t rowOffsetAfter = rowOffset + {{ width }};
+
+        for (uint16_t _x = {{ r }}; _x < {{ width - r }}; _x += {{ spacing }}) {
+            const uint16_t offset = rowOffset + _x;
+            const uint16_t offsetBefore = rowOffsetBefore + _x;
+            const uint16_t offsetAfter = rowOffsetAfter + _x;
+            uint8_t pixel = x[offset];
+
+            {% if r == 1 %}
+                uint8_t p0 = x[offsetBefore - 1];
+                uint8_t p1 = x[offsetBefore];
+                uint8_t p2 = x[offsetBefore + 1];
+                uint8_t p3 = x[offset + 1];
+                uint8_t p4 = x[offsetAfter + 1];
+                uint8_t p5 = x[offsetAfter];
+                uint8_t p6 = x[offsetAfter - 1];
+                uint8_t p7 = x[offset - 1];
+            {% endif %}
+
+            {% if eps > 0 %}
+                if (pixel <= {{ 255 - eps }}) pixel += {{ eps }};
+            {% endif %}
+
+            uint8_t feature = (
+                (p0 > pixel)
+                | ((p1 > pixel) << 1)
+                | ((p2 > pixel) << 2)
+                | ((p3 > pixel) << 3)
+                | ((p4 > pixel) << 4)
+                | ((p5 > pixel) << 5)
+                | ((p6 > pixel) << 6)
+                | ((p7 > pixel) << 7)
+            );
+
+            hist[feature >> {{ shift }}] += 1;
+        }
+    }
+
+    // copy over
+    for (uint16_t i = 0; i < {{ bins }}; i++)
+        x[i] = hist[i];
+{% endblock %}
+
+{% block protected %}
+    {{ dtype }} hist[{{ bins }}] = {0};
+{% endblock %}

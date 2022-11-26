@@ -1,0 +1,26 @@
+{% extends 'BaseClassifier' %}
+
+{% block predict %}
+    let votes = [...new Array({{ this.num_outputs }})].map(() => 0)
+
+    {% for k, tree in enumerate(trees) %}
+        votes[{{ k % n_classes }}] += this.tree{{ k }}(x)
+    {% endfor %}
+
+    {% include 'vote' indent content %}
+{% endblock %}
+
+{% block methods %}
+
+    {% for k, tree in enumerate(trees) %}
+        {% with i = 0, left = tree['left'], right = tree['right'], features = tree['features'], thresholds = tree['thresholds'] %}
+            /**
+             * Tree #{{ k }}
+             */
+            tree{{ k }}(x) {
+                {% include 'tree' indent content %}
+            }
+        {% endwith %}
+    {% endfor %}
+
+{% endblock %}

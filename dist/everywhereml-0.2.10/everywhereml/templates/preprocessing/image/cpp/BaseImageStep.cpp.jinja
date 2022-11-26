@@ -1,0 +1,30 @@
+#ifndef {{ UUID }}
+#define {{ UUID }}
+
+/**
+ {{ str(this) | to_c_comment }}
+ */
+class {{ class_name }} {
+    public:
+
+        /**
+         * Transform input image
+         */
+         template<typename T, typename U>
+        bool transform(T *input, U *output) {
+            {% block transform %}
+                // @todo implement step code
+            {% endblock %}
+
+            return true;
+        }
+
+    protected:
+        {% block protected %}{% endblock %}
+};
+
+{% if instance_name %}
+static {{ class_name }} {{ instance_name }};
+{% endif %}
+
+#endif

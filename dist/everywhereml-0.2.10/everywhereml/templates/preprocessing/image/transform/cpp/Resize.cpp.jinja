@@ -1,0 +1,13 @@
+{% if pixformat == 'gray' %}
+    // grayscale rescaling
+    const float dy = {{ source_height / dest_height }}f;
+    const float dx = {{ source_width / dest_width }}f;
+
+    for (uint16_t y = 0; y < {{ dest_height }}; y++) {
+        const size_t sourceOffset = round(y * dy) * {{ source_width }};
+        const size_t destOffset = y * {{ dest_width }};
+
+        for (uint16_t x = 0; x < {{ dest_width }}; x++)
+            input[destOffset + x] = input[sourceOffset + ((uint16_t) (x * dx))];
+    }
+{% endif %}

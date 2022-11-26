@@ -1,0 +1,12 @@
+// return argmax of votes
+uint8_t maxClassIdx = 0;
+float maxVote = votes[0];
+
+for (uint8_t i = 1; i < {{ this.num_outputs }}; i++) {
+    if (votes[i] > maxVote) {
+        maxClassIdx = i;
+        maxVote = votes[i];
+    }
+}
+
+predictedValue = maxClassIdx;

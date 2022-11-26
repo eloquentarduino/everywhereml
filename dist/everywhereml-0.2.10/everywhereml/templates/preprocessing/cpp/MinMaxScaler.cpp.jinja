@@ -1,0 +1,17 @@
+{% extends './Step' %}
+
+{% block transform %}
+    for (uint16_t i = 0; i < {{ num_inputs }}; i++) {
+        x[i] = (x[i] - offset[i]) * scale[i] + {{ offset2 }};
+
+        if (x[i] < {{ low }}) x[i] = {{ low }};
+        else if (x[i] > {{ high }}) x[i] = {{ high }};
+    }
+
+    return true;
+{% endblock %}
+
+{% block protected %}
+    float offset[{{ offset | c_shape }}] = {{ offset | to_c_array }};
+    float scale[{{ scale | c_shape }}] = {{ scale | to_c_array }};
+{% endblock %}

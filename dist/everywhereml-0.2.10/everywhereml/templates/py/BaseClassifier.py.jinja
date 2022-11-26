@@ -1,0 +1,47 @@
+try:
+    from time import ticks_us, ticks_diff
+except ImportError:
+    from time import time_ns
+
+    def ticks_us(): return int(time_ns() * 1000)
+    def ticks_diff(a, b): return a - b
+
+
+class {{ class_name or this.class_name }}:
+    """
+    {{ str(this) | to_py_comment }}
+    """
+
+    def __init__(self):
+        """
+        Constructor
+        """
+        self.latency = 0
+        self.predicted_value = -1
+        {% filter indent(4) %}
+        {% block init %}{% endblock %}
+        {% endfilter %}
+
+    def predict(self, x):
+        """
+        Predict output from input vector
+        """
+        self.predicted_value = -1
+        started_at = ticks_us()
+
+        {% filter indent(4) %}
+        {% block predict %}{% endblock %}
+        {% endfilter %}
+
+        self.latency = ticks_diff(ticks_us(), started_at)
+
+        return self.predicted_value
+
+    {% include 'class_map' indent content %}
+    {% include 'latency' indent content %}
+    {% block functions %}{% endblock %}
+
+
+{% if instance_name %}
+{{ class_name or this.class_name }} {{ instance_name }}
+{% endif %}

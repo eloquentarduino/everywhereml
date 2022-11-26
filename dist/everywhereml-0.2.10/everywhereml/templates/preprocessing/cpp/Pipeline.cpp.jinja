@@ -1,0 +1,71 @@
+#ifndef {{ UUID }}
+#define {{ UUID }}
+
+#include <cstring>
+
+
+namespace {{ this.name or 'Eloquent' }} {
+
+    {% for i, step in enumerate(steps) %}
+        {{ step.to_cpp(instance_name=None, namespace=None, class_name='Step%d' % i, dialect=dialect) }}
+    {% endfor %}
+
+     /**
+     {{ str(this) | to_c_comment }}
+     */
+    class {{ class_name or 'Pipeline' }} {
+        public:
+            static const uint16_t NUM_INPUTS = {{ num_inputs }};
+            static const uint16_t NUM_OUTPUTS = {{ num_outputs }};
+            static const uint16_t WORKING_SIZE = {{ working_size }};
+            {{ dtype }} X[{{ working_size }}];
+
+            /**
+             * Apply pipeline to input vector
+             */
+            template<typename T>
+            bool transform(T *x) {
+                for (uint16_t i = 0; i < {{ num_inputs }}; i++)
+                    this->X[i] = x[i];
+
+                size_t start = micros();
+                bool isOk =
+                {% for i, step in enumerate(steps) %}
+                    {{ '&&' if i > 0 else '' }} step{{ i }}.transform(X)
+                {% endfor %};
+
+                latency = micros() - start;
+
+                return isOk;
+            }
+
+            /**
+             * Debug output feature vector
+             */
+            template<typename PrinterInterface>
+            void debugTo(PrinterInterface &printer, uint8_t precision=5) {
+                printer.print(X[0], precision);
+
+                for (uint16_t i = 1; i < {{ num_outputs }}; i++) {
+                    printer.print(", ");
+                    printer.print(X[i], precision);
+                }
+
+                printer.print('\n');
+            }
+
+            {% include 'latency' %}
+
+        protected:
+            float latency;
+            {% for i, step in enumerate(steps) %}
+                {{ this.name or 'Eloquent' }}::Step{{ i }} step{{ i }};
+            {% endfor %}
+    };
+}
+
+{% if instance_name %}
+static {{ this.name or 'Eloquent' }}::{{ class_name or 'Pipeline' }} {{ instance_name }};
+{% endif %}
+
+#endif

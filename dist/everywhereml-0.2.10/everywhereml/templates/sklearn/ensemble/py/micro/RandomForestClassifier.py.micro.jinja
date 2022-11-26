@@ -1,0 +1,30 @@
+{% extends 'BaseClassifier' %}
+
+{% block init %}
+    self.votes = {{ ([0] * this.num_outputs) | to_py_list }}
+{% endblock %}
+
+{% block predict %}
+    self.votes = {{ ([0] * this.num_outputs) | to_py_list }}
+
+    {% for k, tree in enumerate(trees) %}
+    idx, score = self.tree{{ k }}(x)
+    self.votes[idx] += score
+    {% endfor %}
+
+    {% include 'vote' indent content %}
+{% endblock %}
+
+{% block functions %}
+
+    {% for k, tree in enumerate(trees) %}
+    {% with i = 0, left = tree['left'], right = tree['right'], features = tree['features'], thresholds = tree['thresholds'], classes = tree['classes'] %}
+    def tree{{ k }}(self, x):
+        """
+        Random forest's tree #{{ k }}
+        """
+        {% include 'tree' indent content %}
+    {% endwith %}
+    {% endfor %}
+
+{% endblock %}
