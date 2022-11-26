@@ -21,7 +21,6 @@ class TensorFlowPorter(GeneratesCode):
             # float ys -> regression
             self.num_outputs = 1
 
-
     def get_template_data(self):
         """
 

@@ -251,6 +251,21 @@ class Dataset:
 
         return None
 
+    def drop_columns(self, columns: list):
+        """
+        Remove columns by index or name
+        :param columns: list
+        :return: Dataset
+        """
+        keep_columns = [(i, c) for i, c in enumerate(self.feature_names)
+                        if i not in columns and c not in columns]
+        keep_columns_indices = [i for i, c in keep_columns]
+
+        return self.replace(
+            X=self.X[:, keep_columns_indices],
+            feature_names=[c for i, c in keep_columns]
+        )
+
     def apply(self, pipeline):
         """
         Apply pipeline
