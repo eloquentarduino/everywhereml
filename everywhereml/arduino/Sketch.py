@@ -66,6 +66,17 @@ class Sketch:
         """
         return abspath(join(self.folder, filename))
 
+    def cat(self, filename: str = None):
+        """
+        Read file
+        :param filename:
+        :return:
+        """
+        if filename is None:
+            filename = f'{self.name}.ino'
+
+        return self.files[filename]['contents']
+
     def compile(self, cli : Cli = None, board: str = None, *args):
         """
         Compile sketch

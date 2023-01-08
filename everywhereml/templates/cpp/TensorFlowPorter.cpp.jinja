@@ -2,6 +2,7 @@
 #define {{ UUID }}
 
 #include <EloquentTinyML.h>
+#include <eloquent_tinyml/tensorflow.h>
 
 #ifdef __has_attribute
 #define HAVE_ATTRIBUTE(x) __has_attribute(x)
@@ -14,8 +15,12 @@
 #define DATA_ALIGN_ATTRIBUTE
 #endif
 
-const unsigned char __tfModel{{ id }}[] DATA_ALIGN_ATTRIBUTE = { {{ bytes_array }} };
-const size_t __tfModel{{ id }}Size = {{ model_size }};
+#ifndef ARENA_SIZE
+#define ARENA_SIZE {{ arena_size or 8192 }}
+#endif
+
+/** model size = {{ model_size }} bytes **/
+const unsigned char modelData[] DATA_ALIGN_ATTRIBUTE = { {{ bytes_array }} };
 
 /**
  * Wrapper around the EloquentTinyML library
@@ -23,13 +28,13 @@ const size_t __tfModel{{ id }}Size = {{ model_size }};
 template<uint32_t arenaSize>
 class {{ class_name or this.class_name }} {
     public:
-        Eloquent::TinyML::TfLite<{{ num_inputs }}, {{ num_outputs }}, arenaSize> tf;
+        Eloquent::TinyML::TensorFlow::AllOpsTensorFlow<{{ num_inputs }}, {{ num_outputs }}, arenaSize> tf;
 
         /**
          * Init model
          */
         bool begin() {
-            return tf.begin(_tfModel{{ id }});
+            return tf.begin(modelData);
         }
 
         /**
@@ -76,15 +81,9 @@ class {{ class_name or this.class_name }} {
         }
 };
 
-/**
- * Specialized class with default tensor arena size
- */
-class {{ class_name or this.class_name }} : public {{ class_name or this.class_name }}<4096> {
-
-};
 
 {% if instance_name %}
-{{ class_name or this.class_name }} {{ instance_name }};
+{{ class_name or this.class_name }}<ARENA_SIZE> {{ instance_name }};
 {% endif %}
 
 #endif
