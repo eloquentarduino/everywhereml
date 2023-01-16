@@ -1,4 +1,7 @@
-from collections.abc import Iterable
+try:
+    from collections import Iterable
+except ImportError:
+    from collections.abc import Iterable
 
 
 def is_list(x):
