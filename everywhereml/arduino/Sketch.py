@@ -40,6 +40,12 @@ class Sketch:
         :param other:
         :return:
         """
+        if isinstance(other, list):
+            for o in other:
+                self += o
+
+            return self
+
         filename = f'{self.name}.ino' if isinstance(other, Ino) else other.filename
         self.files[filename] = {
             'contents': other.contents
