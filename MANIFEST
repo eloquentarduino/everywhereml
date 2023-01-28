@@ -3,10 +3,12 @@ setup.py
 everywhereml/__init__.py
 everywhereml/arduino/BoardEntry.py
 everywhereml/arduino/Cli.py
+everywhereml/arduino/Cpp.py
 everywhereml/arduino/H.py
 everywhereml/arduino/Ino.py
 everywhereml/arduino/PortEntry.py
 everywhereml/arduino/Selector.py
+everywhereml/arduino/SerialIO.py
 everywhereml/arduino/Sketch.py
 everywhereml/arduino/__init__.py
 everywhereml/code_generators/GeneratesCode.py
