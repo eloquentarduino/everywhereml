@@ -1,8 +1,10 @@
 import re
+from time import sleep
 from os import makedirs
 from os.path import join, abspath, basename, isdir
 from everywhereml.arduino.Ino import Ino
 from everywhereml.arduino.Cli import Cli, cli as cli_singleton
+from everywhereml.arduino.SerialIO import SerialIO
 
 
 class Sketch:
@@ -46,7 +48,7 @@ class Sketch:
 
             return self
 
-        filename = f'{self.name}.ino' if isinstance(other, Ino) else other.filename
+        filename = f'{self.basename}.ino' if isinstance(other, Ino) else other.filename
         self.files[filename] = {
             'contents': other.contents
         }
@@ -57,12 +59,24 @@ class Sketch:
         return self
 
     @property
+    def basename(self):
+        return basename(self.name)
+
+    @property
     def path(self):
         """
         Get absolute path to project folder
         :return:
         """
         return abspath(self.folder)
+    
+    @property
+    def serial(self):
+        """
+        Get Serial port I/O
+        :return:
+        """
+        return SerialIO(port=self.port)
 
     def path_to(self, filename: str) -> str:
         """
@@ -147,8 +161,10 @@ class Sketch:
         cli.exec('upload', '--verify', '--fqbn', self.fqbn, '--port', self.port, *args, cwd=self.path)
 
         self.output = cli.any_output
-        self.is_successful = re.search(r'leaving...|ok|success', self.output.lower()) is not None
+        self.is_successful = re.search(r'leaving...|success', self.output.lower()) is not None
         self.stats['upload_time'] = cli.exec_time
+        # if you interact with the Serial port too early, you can get an error
+        sleep(2)
 
         return self
 
