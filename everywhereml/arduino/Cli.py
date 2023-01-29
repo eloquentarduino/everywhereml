@@ -1,8 +1,8 @@
-import re
 from os import getcwd
 from os.path import abspath
 from platform import system
 from timeit import default_timer
+from logging import debug
 from subprocess import STDOUT, CalledProcessError, check_output
 from everywhereml.arduino.BoardEntry import BoardEntry
 from everywhereml.arduino.PortEntry import PortEntry
@@ -98,10 +98,20 @@ class Cli:
         :return:
         """
         ports = [PortEntry(p.strip()) for p in self.exec('board', 'list').split('\n') if p.strip()]
-        exact_matches = [p for p in ports if p.exact_match(query, fqbn)]
 
-        if len(exact_matches) > 0:
-            return Selector(exact_matches).select().port
+        # exact match by port query
+        if query is not None:
+            exact_matches = [p for p in ports if p.exact_match(query)]
+
+            if len(exact_matches) > 0:
+                return Selector(exact_matches).log("Serial ports").select().port
+
+        # exact match by fqbn
+        if fqbn is not None:
+            exact_matches = [p for p in ports if p.exact_match("", fqbn)]
+
+            if len(exact_matches) > 0:
+                return Selector(exact_matches).log("Serial ports").select().port
 
         partial_matches = (
             [p for p in ports if p.starts_with(query)] +
@@ -109,7 +119,7 @@ class Cli:
             [p for p in ports if p.contains(query)])
 
         if len(partial_matches) > 0:
-            return Selector(partial_matches).select().port
+            return Selector(partial_matches).log("Serial ports").select().port
 
         return query
 
@@ -119,6 +129,7 @@ class Cli:
         :return: str command output
         """
         try:
+            debug(" ".join([self.exe, command] + list(args)))
             start_time = default_timer()
             self.output = check_output([self.exe, command] + list(args), stderr=STDOUT, cwd=(cwd or self.cwd)).decode('utf-8')
             self.error = None

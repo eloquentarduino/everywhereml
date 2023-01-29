@@ -1,3 +1,6 @@
+from logging import info
+
+
 class Selector:
     """
     Choose a board from a number of ones
@@ -10,6 +13,19 @@ class Selector:
         assert len(entries) > 0, 'list of entries is empty'
 
         self.entries = sorted(set(entries), key=lambda e: str(e))
+
+    def log(self, objects_name: str):
+        """
+        Log choices
+        :param objects_name:
+        :return:
+        """
+        info(f"Found {len(self.entries)} {objects_name}")
+
+        if len(self.entries) == 1:
+            info(f"Choosing {self.entries[0]} automatically")
+
+        return self
 
     def select(self):
         """
