@@ -143,12 +143,13 @@ class Sketch:
 
         return self
 
-    def upload(self, port: str = None, cli : Cli = None, board: str = None, return_success: bool = False, *args):
+    def upload(self, port: str = None, cli : Cli = None, board: str = None, force: bool = False, return_success: bool = False, *args):
         """
         Upload sketch
         :param port:
         :param cli:
         :param board:
+        :param force: if True, use the provided port as-is
         :param return_success:
         :param args:
         :return:
@@ -156,7 +157,7 @@ class Sketch:
         self.is_successful = False
         cli = cli or cli_singleton
         self.fqbn = cli.find_fqbn(board or self.fqbn or self.board)
-        self.port = cli.find_port(port or self.port, fqbn=self.fqbn)
+        self.port = cli.find_port(port or self.port, fqbn=self.fqbn) if not force else port
 
         cli.exec('upload', '--verify', '--fqbn', self.fqbn, '--port', self.port, *args, cwd=self.path)
 
