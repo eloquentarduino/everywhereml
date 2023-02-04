@@ -36,6 +36,8 @@ everywhereml/data/collect/ByteStream.py
 everywhereml/data/collect/MjpegCollector.py
 everywhereml/data/collect/SerialCollector.py
 everywhereml/data/collect/__init__.py
+everywhereml/dialog/Selector.py
+everywhereml/dialog/__init__.py
 everywhereml/get_started/__init__.py
 everywhereml/plot/DatasetPlotter.py
 everywhereml/plot/__init__.py
