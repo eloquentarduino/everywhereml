@@ -6,7 +6,7 @@ from logging import debug
 from subprocess import STDOUT, CalledProcessError, check_output
 from everywhereml.arduino.BoardEntry import BoardEntry
 from everywhereml.arduino.PortEntry import PortEntry
-from everywhereml.arduino.Selector import Selector
+from everywhereml.dialog.Selector import Selector
 
 
 class Cli:
