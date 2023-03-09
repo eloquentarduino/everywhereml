@@ -70,7 +70,7 @@ class MjpegCollector:
 
                 target_folder = abspath(join(base_folder, target_name))
 
-                if not target_folder:
+                if not isdir(target_folder):
                     info(f'creating {target_folder} folder')
                     mkdir(target_folder)
 
