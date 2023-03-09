@@ -193,12 +193,8 @@ class ImageDataset:
 
         :return:
         """
-        y = self.y
-
         for class_idx in range(self.num_classes):
-            images = self.images[y == class_idx]
-
-            yield class_idx, images
+            yield class_idx, [im for i, im in enumerate(self.images) if self.y[i] == class_idx]
 
     def clone(self, shallow=True, **kwargs):
         """

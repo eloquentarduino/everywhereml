@@ -1,7 +1,8 @@
 import requests
 from os import mkdir
-from os.path import isdir
-from time import time
+from os.path import isdir, join, abspath
+from time import time, sleep
+from logging import info, debug, warning
 from everywhereml.data import ImageDataset
 
 
@@ -31,7 +32,7 @@ class MjpegCollector:
         assert samples_per_class > 0 or duration > 0, 'you MUST set either samples_per_class or duration'
 
         print('This is an interactive data capturing procedure.')
-        print('Keep in mind that as soon as you will enter a class name, the capturing will start, so be ready!')
+        print('Keep in mind that when you enter a class name, the capturing will start in 2 seconds, so be ready!')
 
         while True:
             try:
@@ -43,32 +44,50 @@ class MjpegCollector:
                 if len(target_name) == 0:
                     continue
 
+                # allow some time for the user to settle
+                sleep(2)
+
                 if duration > 0:
                     images = self.collect_by_duration(duration)
                 else:
                     images = self.collect_by_samples(samples_per_class)
 
-                print('Captured %d images' % len(images))
+                info('Captured %d images' % len(images))
 
-                if input('Is this class ok? (y|n) ').strip().lower() != 'y':
+                if input('Is this class ok? (y|n) ').strip().lower()[0] != 'y':
                     continue
 
                 # save to disk
                 if not isdir(base_folder):
-                    print(f'creating {base_folder} folder')
+                    info(f'creating {abspath(base_folder)} folder')
                     mkdir(base_folder)
 
-                if not isdir(f'{base_folder}/{target_name}'):
-                    print(f'creating {base_folder}/{target_name} folder')
-                    mkdir(f'{base_folder}/{target_name}')
+                # make sure folder is created
+                while not isdir(base_folder):
+                    info(f'Folder {abspath(base_folder)} does not exists and cannot be created. Please create manually')
+                    input('Press [Enter] when you\'re done')
+
+                target_folder = abspath(join(base_folder, target_name))
+
+                if not target_folder:
+                    info(f'creating {target_folder} folder')
+                    mkdir(target_folder)
+
+                # make sure folder is created
+                while not isdir(target_folder):
+                    info(f'Folder {target_folder} does not exists and cannot be created. Please create manually')
+                    input('Press [Enter] when you\'re done')
 
                 timestamp = time()
 
                 for i, im in enumerate(images):
-                    with open(f'{base_folder}/{target_name}/{timestamp}_{i}.jpg', 'wb') as file:
+                    image_path = join(target_folder, f'{timestamp}_{i}.jpg')
+
+                    with open(image_path, 'wb') as file:
+                        debug(f'Saving image to {image_path}')
                         file.write(im)
             except Exception as ex:
-                print('ex', ex)
+                warning(ex)
 
         return ImageDataset.from_nested_folders(
             name=dataset_name,
