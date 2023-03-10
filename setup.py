@@ -6,13 +6,13 @@ data=["tests/templates/pipeline.cpp.jinja", "tests/templates/classifier.cpp.jinj
 setup(
   name='everywhereml',
   packages=packages,
-  version='0.2.19',
+  version='0.2.20',
   license='MIT',
   description='Train ML in Python, run everywhere',
   author='Simone Salerno',
   author_email='support@eloquentarduino.com',
   url='https://github.com/eloquentarduino/everywhereml',
-  download_url='https://github.com/eloquentarduino/everywhereml/blob/master/dist/everywhereml-0.2.19.tar.gz?raw=true',
+  download_url='https://github.com/eloquentarduino/everywhereml/blob/master/dist/everywhereml-0.2.20.tar.gz?raw=true',
   keywords=[
     'ML',
     'machine learning'
