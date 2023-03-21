@@ -5,6 +5,7 @@ from os.path import join, abspath, basename, isdir
 from everywhereml.arduino.Ino import Ino
 from everywhereml.arduino.Cli import Cli, cli as cli_singleton
 from everywhereml.arduino.SerialIO import SerialIO
+from everywhereml.arduino.FileManipulator import FileManipulator
 
 
 class Sketch:
@@ -96,6 +97,14 @@ class Sketch:
             filename = f'{self.name}.ino'
 
         return self.files[filename]['contents']
+
+    def file(self, filename: str) -> FileManipulator:
+        """
+        Get file manipulator for given file
+        :param filename:
+        :return:
+        """
+        return FileManipulator(self.path_to(filename))
 
     def compile(self, cli : Cli = None, board: str = None, *args):
         """
