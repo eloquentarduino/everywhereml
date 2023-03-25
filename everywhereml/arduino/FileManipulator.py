@@ -32,6 +32,43 @@ class FileManipulator:
         with open(self.file_path, encoding="utf-8") as file:
             return [line.rstrip() for line in file]
 
+    def define(self, key, value, prepend: bool = True):
+        """
+        Define constant
+        :param prepend:
+        :param key:
+        :param value:
+        :return:
+        """
+        define = f"#define {key}"
+        contents = self.contents
+        lines = [line.strip() for line in contents.split("\n")]
+        existing = next(line for line in lines if line.startswith(define))
+
+        if existing:
+            logging.info(f"replacing existing {existing}")
+
+            return self.replace_line(existing, f"#define {key} ({value})")
+        else:
+            logging.info(f"adding new #define {key} ({value})")
+
+            if prepend:
+                contents = f"#define {key} ({value})\n\n{contents}"
+            else:
+                contents += f"\n\n#define {key} ({value})"
+
+        return self.write(contents)
+
+    def replace(self, find: str, replace: str, all: bool = False):
+        """
+        Replace occurrences of given string
+        :param all:
+        :param find:
+        :param replace:
+        :return:
+        """
+        return self.write(self.contents.replace(find, replace, 99999 if all else 1))
+
     def replace_line(self, find: str, replace: str):
         """
         Replace line that starts with given string
@@ -48,10 +85,12 @@ class FileManipulator:
                 break
 
         if match == -1:
-            return
+            return self
 
         lines[match] = replace
         self.writelines(lines)
+
+        return self
 
     def append_once(self, line: str, alias: str = ""):
         """
@@ -70,7 +109,7 @@ class FileManipulator:
         :param once:
         :return:
         """
-        self.append_lines(line, once=once, alias=alias)
+        return self.append_lines(line, once=once or alias != "", alias=alias)
 
     def append_lines(self, *args, once: bool = False, alias: str = ""):
         """
@@ -100,9 +139,18 @@ class FileManipulator:
             plain_lines = [line.strip() for line in lines]
             match = plain_lines.index(find) + 1
             hash, appends = self.wrap_once(*contents.split("\n"), alias=alias)
-            self.writelines(lines[:match] + appends + lines[match:], hash=hash, keep="first")
+
+            return self.writelines(lines[:match] + appends + lines[match:], hash=hash, keep="first")
         except ValueError:
             logging.warning(f"Cannot find line `{find}`")
+
+    def comment_line(self, find: str):
+        """
+        Comment out line with //
+        :param find:
+        :return: self
+        """
+        return self.replace_line(find=find, replace=f"// {find}")
 
     def writelines(self, lines: list, hash: str = "", keep: str = ""):
         """
@@ -117,6 +165,19 @@ class FileManipulator:
 
         if hash:
             self.deduplicate(hash, keep=keep)
+
+        return self
+
+    def write(self, contents: str):
+        """
+
+        :param contents:
+        :return:
+        """
+        with open(self.file_path, "w", encoding="utf-8") as file:
+            file.write(contents)
+
+        return self
 
     def wrap_once(self, *args, alias: str = "") -> tuple:
         """

@@ -1,7 +1,10 @@
 import re
 from time import sleep
 from os import makedirs
-from os.path import join, abspath, basename, isdir
+from logging import info
+from glob import glob
+from shutil import copyfile
+from os.path import join, abspath, basename, dirname, isdir, isfile, sep
 from everywhereml.arduino.Ino import Ino
 from everywhereml.arduino.Cli import Cli, cli as cli_singleton
 from everywhereml.arduino.SerialIO import SerialIO
@@ -79,6 +82,49 @@ class Sketch:
         """
         return SerialIO(port=self.port)
 
+    def clone_to(self, new_folder: str, exists_ok: bool = False):
+        """
+
+        :param new_folder:
+        :param exists_ok: if True, overwrite all files without confirmation
+        :return:
+        """
+        # if new_folder is a relative path, it is relative to current parent folder
+        if new_folder[0] != sep:
+            new_folder = abspath(join(dirname(self.path), new_folder))
+
+        info(f"cloning project to {new_folder}")
+
+        if not isdir(new_folder):
+            makedirs(new_folder, 0o777)
+
+        exists_ok_all = exists_ok
+
+        for filename in glob(f"{self.path}/*"):
+            dest = join(new_folder, basename(filename))
+            exists_ok = False
+
+            if isdir(filename):
+                continue
+
+            # change name to .ino file
+            if filename.endswith(".ino"):
+                dest = join(new_folder, f"{basename(new_folder)}.ino")
+
+            if isfile(dest) and not exists_ok_all:
+                criterion = input(f"Overwrite existing file {basename(dest)}? (yes|no|all): ").lower().strip()
+                exists_ok_all = criterion.startswith('a')
+                exists_ok = criterion.startswith('y')
+
+            if isfile(dest) and not exists_ok and not exists_ok_all:
+                info(f"Skipping {basename(dest)}...")
+                continue
+
+            info(f"Copying {basename(dest)}...")
+            copyfile(abspath(filename), dest)
+
+        return Sketch(name=basename(new_folder), folder=dirname(new_folder), board=self.board)
+
     def path_to(self, filename: str) -> str:
         """
         Convert relative path to absolute path
@@ -104,6 +150,9 @@ class Sketch:
         :param filename:
         :return:
         """
+        if filename == 'main':
+            filename = f'{self.name}.ino'
+
         return FileManipulator(self.path_to(filename))
 
     def compile(self, cli : Cli = None, board: str = None, *args):
@@ -150,6 +199,17 @@ class Sketch:
 
         self.is_successful = self.stats['flash'] > 0
 
+        return self
+
+    def set_port(self, port: str = None, cli : Cli = None, force: bool = False):
+        """
+        Find matching port
+        :param port:
+        :param cli:
+        :param force:
+        :return:
+        """
+        self.port = (cli or cli_singleton).find_port(port or self.port, fqbn=self.fqbn) if not force else port
         return self
 
     def upload(self, port: str = None, cli : Cli = None, board: str = None, force: bool = False, return_success: bool = False, *args):

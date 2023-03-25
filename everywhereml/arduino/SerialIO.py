@@ -15,12 +15,13 @@ class SerialIO:
         self.port = port
         self.baud = baud
 
-    def read_lines(self, limit: int = -1, timeout: int = 120, confirm: bool = True, **kwargs):
+    def read_lines(self, limit: int = -1, timeout: int = 120, confirm: bool = True, start_of_line: str = "", **kwargs):
         """
         Read lines
         :param limit:
         :param timeout:
         :param confirm:
+        :param start_of_line:
         :return: list
         """
         with Serial(self.port, baudrate=self.baud, timeout=10, **kwargs) as serial:
@@ -37,7 +38,10 @@ class SerialIO:
 
                 while (limit < 0 or len(lines) < limit) and elapsed < timeout:
                     try:
-                        lines.append(serial.readline().decode("utf-8").strip())
+                        line = serial.readline().decode("utf-8").strip()
+
+                        if start_of_line == "" or line.startswith(start_of_line):
+                            lines.append(line[len(start_of_line):])
 
                         if limit > 0:
                             current_update = (100 * len(lines)) // limit
