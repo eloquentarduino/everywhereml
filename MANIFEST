@@ -4,6 +4,7 @@ everywhereml/__init__.py
 everywhereml/arduino/BoardEntry.py
 everywhereml/arduino/Cli.py
 everywhereml/arduino/Cpp.py
+everywhereml/arduino/FileManipulator.py
 everywhereml/arduino/H.py
 everywhereml/arduino/Ino.py
 everywhereml/arduino/PortEntry.py
