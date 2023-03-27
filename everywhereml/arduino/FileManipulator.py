@@ -69,6 +69,15 @@ class FileManipulator:
         """
         return self.write(self.contents.replace(find, replace, 99999 if all else 1))
 
+    def replace_regex(self, pattern: str, replace: str):
+        """
+        Replace regex
+        :param pattern:
+        :param replace:
+        :return:
+        """
+        return self.write(re.sub(pattern, replace, self.contents))
+
     def replace_line(self, find: str, replace: str):
         """
         Replace line that starts with given string
