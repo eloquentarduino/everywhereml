@@ -61,7 +61,7 @@ class Dataset:
         )
 
     @staticmethod
-    def from_csv(filename, name, target_column='target', target_name_column=None, **kwargs):
+    def from_csv(filename, name: str = 'Dataset', target_column: str = 'target', target_name_column: str = None, **kwargs):
         """
         Construct dataset from csv file
         :param filename:

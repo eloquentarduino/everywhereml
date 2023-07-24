@@ -54,7 +54,10 @@ class Window(GeneratesCode):
         idx = self.idx(dataset.X)
         X = dataset.X[idx]
         X = X.reshape((-1, self.num_inputs * self.length))
-        y = np.asarray([mode(window)[0][0] for window in dataset.y[idx]])
+        try:
+            y = np.asarray([mode(window)[0][0] for window in dataset.y[idx]])
+        except IndexError:
+            y = np.asarray([mode(window).mode for window in dataset.y[idx]])
         feature_names = [f'{feature_name}_{i}' for i, feature_name in product(range(self.length), dataset.feature_names)]
 
         return dataset.replace(X=X, y=y, feature_names=feature_names).annotate(window_length=self.length)

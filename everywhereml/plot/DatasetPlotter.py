@@ -1,6 +1,5 @@
 import seaborn as sns
 from sklearn.feature_selection import SelectKBest
-from umap import UMAP
 import matplotlib.pyplot as plt
 
 
@@ -54,6 +53,8 @@ class DatasetPlotter:
         Plot UMAP (https://umap-learn.readthedocs.io/en/latest/)
         :return:
         """
+        from umap import UMAP
+        
         kwargs = {
             **{'n_neighbors': 15, 'min_dist': 0.1},
             **kwargs
