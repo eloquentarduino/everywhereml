@@ -101,6 +101,8 @@ everywhereml/templates/xgboost/cpp/XGBClassifier.jinja
 everywhereml/templates/xgboost/cpp/tree.jinja
 everywhereml/templates/xgboost/js/XGBClassifier.jinja
 everywhereml/templates/xgboost/js/tree.jinja
+everywhereml/templates/xgboost/py/XGBClassifier.jinja
+everywhereml/templates/xgboost/py/tree.jinja
 everywhereml/tests/BaseTestCase.py
 everywhereml/tests/__init__.py
 everywhereml/tests/data/__init__.py
