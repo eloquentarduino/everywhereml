@@ -8,5 +8,5 @@ else:
     {% include 'tree' indent content %}
     {% endwith %}
 {% else %}
-return {{ classes[i].argmax() }}, {{ classes.flatten()[classes[i].argmax()] }}
+return {{ thresholds[i] }}
 {% endif %}

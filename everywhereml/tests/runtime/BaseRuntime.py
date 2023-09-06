@@ -89,7 +89,7 @@ class BaseRuntime:
             output = re.sub(r',\s*\]', ']', output)
 
             try:
-                return np.asarray(json.loads(output), dtype=np.float)
+                return np.asarray(json.loads(output), dtype=float)
             except json.decoder.JSONDecodeError:
                 return None
 

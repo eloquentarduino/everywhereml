@@ -32,7 +32,7 @@ class BaseTestCase(TestCase):
             'pipeline': pipeline.to_cpp(instance_name='pipeline')
         })
         runtime.add_main(main)
-        output = runtime.output(tmp_folder='/Users/simone/Desktop/tmp')
+        output = runtime.output(tmp_folder='/private/tmp')
         self.assertIsNotNone(output, "Output is None")
 
         for x_true, x_pred in zip(dataset_t.X, output):

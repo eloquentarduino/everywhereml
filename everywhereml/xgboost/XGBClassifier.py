@@ -91,3 +91,4 @@ class XGBClassifier(SklearnBaseClassifier, Impl):
                     'thresholds': tree['split_conditions'],
                 } for tree in trees]
             }
+

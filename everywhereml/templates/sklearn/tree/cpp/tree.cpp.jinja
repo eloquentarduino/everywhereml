@@ -1,5 +1,5 @@
 {% if left[i] != right[i] %}
-    if (x[{{ features[i] }}] <= {{ thresholds[i] }}) {
+    if (x[{{ features[i] }}] < {{ thresholds[i] }}) {
         {% with i = left[i] %}
             {% include 'tree' %}
         {% endwith %}

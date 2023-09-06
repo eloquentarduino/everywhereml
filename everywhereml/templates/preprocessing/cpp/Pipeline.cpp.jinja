@@ -31,7 +31,7 @@ namespace {{ this.name or 'Eloquent' }} {
                 size_t start = micros();
                 bool isOk =
                 {% for i, step in enumerate(steps) %}
-                    {{ '&&' if i > 0 else '' }} step{{ i }}.transform(X)
+                    {{ '&&' if i > 0 else '' }} step{{ i }}.transform(X, X)
                 {% endfor %};
 
                 latency = micros() - start;

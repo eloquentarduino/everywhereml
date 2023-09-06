@@ -30,7 +30,7 @@ class FileSystemLoader(Base):
         """
         dialect = self.dialect or "dialect"
         template = template.replace(os.path.sep, '/')
-        folder = self.template_folder.replace(f'{template}/', '')
+        folder = os.path.join(self.template_folder, 'templates')
         attempts = []
 
         while len(folder):

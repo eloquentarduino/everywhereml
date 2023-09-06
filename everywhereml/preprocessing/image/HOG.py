@@ -80,7 +80,7 @@ class HOG(GeneratesCode):
 
         return Dataset(
             name=dataset.name,
-            X=np.asarray(features, dtype=np.float),
+            X=np.asarray(features, dtype=float),
             y=dataset.y,
             feature_names=feature_names,
             target_names=dataset.target_names
@@ -92,7 +92,7 @@ class HOG(GeneratesCode):
         :param im:
         :return:
         """
-        kernel = np.asarray([1, 0, -1], dtype=np.float)
+        kernel = np.asarray([1, 0, -1], dtype=float)
         hog = []
 
         # compute bins
@@ -106,7 +106,7 @@ class HOG(GeneratesCode):
                 gradient_y = convolve1d(block.T, kernel, mode='constant')[1:-1, 1:-1].T
                 gradient_x = convolve1d(block, kernel, mode='constant')[1:-1, 1:-1]
                 gradient = np.sqrt(gradient_y ** 2 + gradient_x ** 2)
-                angle = np.abs(np.arctan2(gradient_y, gradient_x) * 180 / pi).astype(np.int)
+                angle = np.abs(np.arctan2(gradient_y, gradient_x) * 180 / pi).astype(int)
                 hist = np.zeros(self.bins)
                 d = 180 // self.bins
 

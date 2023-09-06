@@ -53,3 +53,13 @@ class XGBClassifierTest(TestCase):
                 self.assertIsNotNone(output, "Output is None")
 
                 assert_allclose(y_true, output, rtol=1e-2)
+
+    def test_can_port_to_micropython(self):
+        """
+
+        :return:
+        """
+        for dataset in self.datasets:
+            for clf in self.instances:
+                clf.fit(dataset)
+                clf.to_micropython()
