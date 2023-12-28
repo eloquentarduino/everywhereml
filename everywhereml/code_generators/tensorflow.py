@@ -1,11 +1,41 @@
 import hexdump
+import numpy as np
 import tensorflow as tf
 from everywhereml.code_generators import GeneratesCode
+from everywhereml.code_generators.jinja.Jinja import Jinja
+
+
+def convert_model(model, X: np.ndarray, y: np.ndarray, model_name: str = 'tfData') -> str:
+    """
+    Convert model to C++ header
+    :param model_name:
+    :param model:
+    :param X:
+    :param y:
+    :return:
+    """
+    assert y.dtype != int or len(y.shape) == 2, 'y must be of dtype=float (regression) or one-hot encoded'
+
+    num_inputs = X.shape[1] if len(X.shape) > 1 else 1
+    num_outputs = 1 if y.dtype != int else y.shape[1]
+    converter = tf.lite.TFLiteConverter.from_keras_model(model)
+    bytes = hexdump.dump(converter.convert()).split(' ')
+    bytes_array = ', '.join(['0x%02x' % int(byte, 16) for byte in bytes])
+    model_size = len(bytes)
+
+    return Jinja(base_folder='', language='cpp', dialect=None).render('convert_tf_model', {
+        'num_inputs': num_inputs,
+        'num_outputs': num_outputs,
+        'bytes_array': bytes_array,
+        'model_size': model_size,
+        'model_name': model_name or 'tfData'
+    })
 
 
 class TensorFlowPorter(GeneratesCode):
     """
     Convert TF models to C++
+    @deprecated
     """
     def __init__(self, model, X, y):
         """

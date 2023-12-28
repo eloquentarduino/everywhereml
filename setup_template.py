@@ -31,7 +31,8 @@ setup(
     'jinja2_workarounds',
     'requests',
     'pySerial',
-    'tqdm'
+    'tqdm',
+    'hexdump'
   ],
   extras_require={
     'tf': ['tensorflow']
