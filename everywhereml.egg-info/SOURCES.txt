@@ -71,6 +71,7 @@ everywhereml/templates/__init__.py
 everywhereml/templates/cpp/BaseClassifier.cpp.jinja
 everywhereml/templates/cpp/TensorFlowPorter.cpp.jinja
 everywhereml/templates/cpp/class_map.cpp.jinja
+everywhereml/templates/cpp/convert_tf_model.jinja
 everywhereml/templates/cpp/latency.cpp.jinja
 everywhereml/templates/cpp/vote.cpp.jinja
 everywhereml/templates/js/BaseClassifier.js.jinja

@@ -12,6 +12,7 @@ jinja2_workarounds
 requests
 pySerial
 tqdm
+hexdump
 
 [tf]
 tensorflow
