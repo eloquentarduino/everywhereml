@@ -44,6 +44,12 @@ def convert_model(model, X: np.ndarray, y: np.ndarray, model_name: str = 'tfData
     allowed_unique_layers = [layer_mapping[l] for l in unique_layers if l in layer_mapping.keys()]
     not_allowed_unique_layers = [l for l in unique_layers if l not in layer_mapping.keys()]
 
+    # generate one sample for each class
+    y_ord = list(np.argmax(y, axis=1))
+    samples_idx = [y_ord.index(i) for i in sorted(list(set(y_ord)))]
+    x_samples = [X[i] for i in samples_idx]
+    y_samples = [y_ord[i] for i in samples_idx]
+
     return Jinja(base_folder='', language='cpp', dialect=None).render('convert_tf_model', {
         'num_inputs': num_inputs,
         'num_outputs': num_outputs,
@@ -51,7 +57,9 @@ def convert_model(model, X: np.ndarray, y: np.ndarray, model_name: str = 'tfData
         'model_size': model_size,
         'allowed_layers': allowed_unique_layers,
         'not_allowed_layers': not_allowed_unique_layers,
-        'model_name': model_name or 'tfData'
+        'model_name': model_name or 'tfData',
+        'x_samples': x_samples,
+        'y_samples': y_samples
     })
 
 

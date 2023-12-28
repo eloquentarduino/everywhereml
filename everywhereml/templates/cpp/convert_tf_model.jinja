@@ -11,9 +11,6 @@
 #define DATA_ALIGN_ATTRIBUTE
 #endif
 
-/** model size = {{ model_size }} bytes **/
-const unsigned char {{ model_name }}[] DATA_ALIGN_ATTRIBUTE = { {{ bytes_array }} };
-
 // include these layers in the network setup
 static const uint8_t NUM_OPS = {{ len(allowed_layers) }};
 
@@ -24,3 +21,10 @@ static const uint8_t NUM_OPS = {{ len(allowed_layers) }};
 {% for l in not_allowed_layers %}// - {{ l }}
 {% endfor %}
 {% endif %}
+
+// sample data
+{% for i, (x, y) in enumerate(zip(x_samples, y_samples)) %}float x{{ i }}[{{ len(x) }}] = { {{ x | to_c_array }} };
+{% endfor %}
+
+/** model size = {{ model_size }} bytes **/
+const unsigned char {{ model_name }}[] DATA_ALIGN_ATTRIBUTE = { {{ bytes_array }} };
