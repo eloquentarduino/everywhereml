@@ -23,7 +23,7 @@ static const uint8_t NUM_OPS = {{ len(allowed_layers) }};
 {% endif %}
 
 // sample data
-{% for i, (x, y) in enumerate(zip(x_samples, y_samples)) %}float x{{ i }}[{{ len(x) }}] = { {{ x | to_c_array }} };
+{% for x, y in zip(x_samples, y_samples) %}float x{{ y }}[{{ len(x) }}] = {{ x | to_c_array }};
 {% endfor %}
 
 /** model size = {{ model_size }} bytes **/
