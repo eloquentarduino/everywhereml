@@ -23,11 +23,34 @@ def convert_model(model, X: np.ndarray, y: np.ndarray, model_name: str = 'tfData
     bytes_array = ', '.join(['0x%02x' % int(byte, 16) for byte in bytes])
     model_size = len(bytes)
 
+    # give user hint of which layers to include
+    unique_layers = set([l.__class__.__name__ for l in model.layers])
+    layer_mapping = {
+        'Add': 'Add',
+        'AveragePooling2D': 'AveragePool2D',
+        'Concatenate': 'Concatenation',
+        'Conv2D': 'Conv2D',
+        'DepthwiseConv2D': 'DepthwiseConv2D',
+        'ELU': 'Elu',
+        'Dense': 'FullyConnected',
+        'LeakyReLU': 'LeakyRelu',
+        'MaxPool2D': 'MaxPool2D',
+        'Maximum': 'Maximum',
+        'Minimum': 'Minimum',
+        'ReLU': 'Relu',
+        'Reshape': 'Reshape',
+        'Softmax': 'Softmax'
+    }
+    allowed_unique_layers = [layer_mapping[l] for l in unique_layers if l in layer_mapping.keys()]
+    not_allowed_unique_layers = [l for l in unique_layers if l not in layer_mapping.keys()]
+
     return Jinja(base_folder='', language='cpp', dialect=None).render('convert_tf_model', {
         'num_inputs': num_inputs,
         'num_outputs': num_outputs,
         'bytes_array': bytes_array,
         'model_size': model_size,
+        'allowed_layers': allowed_unique_layers,
+        'not_allowed_layers': not_allowed_unique_layers,
         'model_name': model_name or 'tfData'
     })
 
