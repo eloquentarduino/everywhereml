@@ -11,9 +11,11 @@
 #define DATA_ALIGN_ATTRIBUTE
 #endif
 
-// include these layers in the network setup
+// configure network in setup()
 static const uint8_t NUM_OPS = {{ len(allowed_layers) }};
 
+// tf.setNumInputs({{ num_inputs }});
+// tf.setNumOutputs({{ num_ouputs }});
 {% for l in allowed_layers %}// tf.resolver.Add{{ l }}();
 {% endfor %}
 {% if len(not_allowed_layers) %}// these layers are used in Python
