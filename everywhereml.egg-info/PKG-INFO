@@ -1,9 +1,9 @@
 Metadata-Version: 2.1
 Name: everywhereml
-Version: 0.2.29
+Version: 0.2.30
 Summary: Train ML in Python, run everywhere
 Home-page: https://github.com/eloquentarduino/everywhereml
-Download-URL: https://github.com/eloquentarduino/everywhereml/blob/master/dist/everywhereml-0.2.29.tar.gz?raw=true
+Download-URL: https://github.com/eloquentarduino/everywhereml/blob/master/dist/everywhereml-0.2.30.tar.gz?raw=true
 Author: Simone Salerno
 Author-email: support@eloquentarduino.com
 License: MIT
