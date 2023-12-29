@@ -11,13 +11,13 @@
 #define DATA_ALIGN_ATTRIBUTE
 #endif
 
-// configure network in setup()
-static const uint8_t NUM_OPS = {{ len(allowed_layers) }};
-
-// tf.setNumInputs({{ num_inputs }});
-// tf.setNumOutputs({{ num_outputs }});
-{% for l in allowed_layers %}// tf.resolver.Add{{ l }}();
+// automatically configure network
+#define TF_NUM_INPUTS {{ num_inputs }}
+#define TF_NUM_OUTPUTS {{ num_outputs }}
+#define TF_NUM_OPS {{ len(allowed_layers) }}
+{% for l in allowed_layers %}#define TF_OP_{{ l | upper }}
 {% endfor %}
+
 {% if len(not_allowed_layers) %}// these layers are used in Python
 // but are not allowed in Arduino
 {% for l in not_allowed_layers %}// - {{ l }}
