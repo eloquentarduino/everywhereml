@@ -41,6 +41,10 @@ def convert_model(model, X: np.ndarray, y: np.ndarray, model_name: str = 'tfData
         'Reshape': 'Reshape',
         'Softmax': 'Softmax'
     }
+
+    if num_outputs > 1:
+        unique_layers.add('Softmax')
+
     allowed_unique_layers = [layer_mapping[l] for l in unique_layers if l in layer_mapping.keys()]
     not_allowed_unique_layers = [l for l in unique_layers if l not in layer_mapping.keys()]
 
