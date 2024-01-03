@@ -36,6 +36,7 @@ everywhereml/code_generators/prettifiers/__init__.py
 everywhereml/code_generators/prettifiers/basic_python_prettifier.py
 everywhereml/data/Dataset.py
 everywhereml/data/ImageDataset.py
+everywhereml/data/_ImageDataset.py
 everywhereml/data/__init__.py
 everywhereml/data/collect/BaseCollector.py
 everywhereml/data/collect/ByteStream.py
