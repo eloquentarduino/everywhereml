@@ -1,3 +1,4 @@
+import re
 import os.path
 from os import makedirs
 from everywhereml.code_generators.jinja.Jinja import Jinja
@@ -159,7 +160,16 @@ class GeneratesCode:
         jinja.update(**kwargs)
         jinja.update(this=self, id=id(self), UUID=f'UUID{id(self)}', description=str(self).split('\n'))
 
-        return jinja.render(self.class_name)
+        code = jinja.render(self.class_name)
+
+        # minify
+        if kwargs.pop('minify', False):
+            try:
+                code = getattr(self, f'minify_{language}')(code)
+            except AttributeError:
+                pass
+
+        return code
 
     def to_language_file(self, language, filename, **kwargs):
         """
@@ -192,3 +202,18 @@ class GeneratesCode:
             file.write(contents)
 
             return contents
+    def minify_cpp(self, code: str) -> str:
+        """
+        Naive C++ minification
+        :param code:
+        :return:
+        """
+        dont_strip = re.compile(r'^\s*(#|//)')
+        minified = ''.join([
+            f'\n{line}\n'
+            if dont_strip.search(line) is not None
+            else f' {line.strip()}'
+            for line in f'{code}'.split('\n')
+        ]).strip()
+
+        return re.sub(r'\n+', '\n', minified)

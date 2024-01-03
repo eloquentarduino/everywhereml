@@ -14,7 +14,6 @@
 {% endblock %}
 
 {% block protected %}
-
     {% for k, tree in enumerate(trees) %}
         {% with i = 0, left = tree['left'], right = tree['right'], features = tree['features'], thresholds = tree['thresholds'], classes = tree['classes'] %}
             /**
@@ -25,5 +24,4 @@
             }
         {% endwith %}
     {% endfor %}
-
 {% endblock %}
