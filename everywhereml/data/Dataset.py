@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 from pandas import DataFrame
 from sklearn.model_selection import train_test_split
-from everywhereml.plot.DatasetPlotter import DatasetPlotter
 
 
 class Dataset:
@@ -161,6 +160,8 @@ class Dataset:
         Get instance of dataset plotter
         :return:
         """
+        from everywhereml.plot.DatasetPlotter import DatasetPlotter
+
         return DatasetPlotter(self)
 
     def describe(self):
