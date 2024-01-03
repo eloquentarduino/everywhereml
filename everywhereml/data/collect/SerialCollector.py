@@ -5,7 +5,8 @@ from serial import Serial
 from time import time
 from tqdm import tqdm
 from skimage.io import imsave
-from everywhereml.data import Dataset, ImageDataset
+from everywhereml.data.Dataset import Dataset
+from everywhereml.data.ImageDataset import ImageDataset
 from everywhereml.data.collect.ByteStream import ByteStream
 from everywhereml.data.collect.BaseCollector import BaseCollector
 

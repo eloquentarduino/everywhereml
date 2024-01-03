@@ -1,5 +1,5 @@
 import numpy as np
-from everywhereml.data import ImageDataset
+from everywhereml.data.ImageDataset import ImageDataset
 from everywhereml.preprocessing.image import LBP
 from everywhereml.tests.preprocessing.BasePreprocessingTestCase import BasePreprocessingTestCase
 

@@ -1,7 +1,7 @@
 from sklearn.base import clone
 from sklearn.model_selection import cross_val_score
-from everywhereml.data import Dataset
-from everywhereml.code_generators import GeneratesCode
+from everywhereml.data.Dataset import Dataset
+from everywhereml.code_generators.GeneratesCode import GeneratesCode
 
 
 class SklearnBaseClassifier(GeneratesCode):

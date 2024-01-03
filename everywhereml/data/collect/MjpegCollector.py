@@ -4,7 +4,7 @@ from os.path import isdir, join, abspath
 from time import time, sleep
 from tqdm.auto import tqdm
 from logging import info, debug, warning
-from everywhereml.data import ImageDataset
+from everywhereml.data.ImageDataset import ImageDataset
 
 
 class MjpegCollector:
