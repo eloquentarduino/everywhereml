@@ -1,7 +1,7 @@
 {% extends 'BaseClassifier' %}
 
 {% block predict %}
-    uint16_t votes[{{ this.num_outputs }}] = { 0 };
+    float votes[{{ this.num_outputs }}] = { 0 };
     uint8_t classIdx = 0;
     float classScore = 0;
 
