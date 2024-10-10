@@ -1,0 +1,12 @@
+// return argmax of votes
+let maxClassIdx = 0;
+let maxVote = votes[0];
+
+for (let i = 1; i < {{ this.num_outputs }}; i++) {
+    if (votes[i] > maxVote) {
+        maxClassIdx = i;
+        maxVote = votes[i];
+    }
+}
+
+predictedValue = maxClassIdx;

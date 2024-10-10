@@ -1,0 +1,5 @@
+class ImageDataset:
+    """
+    Disabled
+    """
+    pass

@@ -1,0 +1,31 @@
+#pragma once
+
+#ifdef __has_attribute
+#define HAVE_ATTRIBUTE(x) __has_attribute(x)
+#else
+#define HAVE_ATTRIBUTE(x) 0
+#endif
+#if HAVE_ATTRIBUTE(aligned) || (defined(__GNUC__) && !defined(__clang__))
+#define DATA_ALIGN_ATTRIBUTE __attribute__((aligned(4)))
+#else
+#define DATA_ALIGN_ATTRIBUTE
+#endif
+
+// automatically configure network
+#define TF_NUM_INPUTS {{ num_inputs }}
+#define TF_NUM_OUTPUTS {{ num_outputs }}
+#define TF_NUM_OPS {{ len(allowed_layers) }}
+{% for l in allowed_layers %}#define TF_OP_{{ l | upper }}
+{% endfor %}
+
+{% if len(not_allowed_layers) %}// these layers are used in Python
+// but are not allowed in Arduino
+{% for l in not_allowed_layers %}// - {{ l }}
+{% endfor %}{% endif %}
+
+// sample data
+{% for x, y in zip(x_samples, y_samples) %}float x{{ y }}[{{ len(x) }}] = {{ x | to_c_array }};
+{% endfor %}
+
+/** model size = {{ model_size }} bytes **/
+const unsigned char {{ model_name }}[] DATA_ALIGN_ATTRIBUTE = { {{ bytes_array }} };

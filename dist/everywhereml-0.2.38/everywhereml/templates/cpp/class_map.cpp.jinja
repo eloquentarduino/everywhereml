@@ -1,0 +1,33 @@
+{% if len(class_map) > 0 %}
+
+/**
+ * Predict class label
+ */
+String predictLabel({{ input_dtype or 'float' }} *x) {
+    return getLabelOf(predict(x));
+}
+
+/**
+ * Get label of last prediction
+ */
+String getLabel() {
+    return getLabelOf(lastPrediction);
+}
+
+/**
+ * Get label of given class
+ */
+String getLabelOf(int8_t idx) {
+    switch (idx) {
+        case -1:
+            return "ERROR";
+        {% for i, target_name in class_map.items() %}
+            case {{ i }}:
+                return "{{ target_name }}";
+        {% endfor %}
+        default:
+            return "UNKNOWN";
+    }
+}
+
+{% endif %}

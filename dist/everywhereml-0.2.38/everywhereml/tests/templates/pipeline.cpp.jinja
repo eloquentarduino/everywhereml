@@ -1,0 +1,37 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <iostream>
+
+using namespace std;
+
+int micros() { return 0; }
+
+{{ pipeline }}
+
+
+void print_array(float *array) {
+    cout << "[" << array[0];
+
+    for (int i = 1; i < pipeline.NUM_OUTPUTS; i++) {
+        cout << "," << array[i];
+    }
+
+    cout << "]" << endl;
+}
+
+
+int main() {
+    float X[{{ X | c_shape }}] = {{ X | to_c_array }};
+
+    cout << "[" << endl;
+
+    for (int i = 0; i < {{ X | length }}; i++) {
+        if (pipeline.transform(X[i])) {
+            print_array(pipeline.X);
+        }
+    }
+
+    cout << "]" << endl;
+
+    return 0;
+}

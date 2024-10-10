@@ -1,0 +1,20 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <iostream>
+
+using namespace std;
+
+int micros() { return 0; }
+
+{{ classifier }}
+
+
+int main() {
+    float X[{{ X | c_shape }}] = {{ X | to_c_array }};
+
+    for (int i = 0; i < {{ X | length }}; i++) {
+        cout << classifier.predict(X[i]) << ", ";
+    }
+
+    return 0;
+}

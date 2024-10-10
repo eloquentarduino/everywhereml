@@ -1,0 +1,100 @@
+{% extends './BaseImageStep' %}
+
+{% block transform %}
+    uint16_t f = 0;
+    uint16_t block = 0;
+    float hog[{{ num_outputs }}] = {0};
+
+    // compute gradients
+    for (uint16_t blockY = 0; blockY < {{ height // block_size }}; blockY++) {
+        const uint16_t blockOffsetY = blockY * {{ block_size * width }};
+
+        for (uint16_t blockX = 0; blockX < {{ width // block_size }}; blockX++) {
+            const uint16_t blockOffsetX = blockX * {{ block_size }};
+            float hist[{{ bins }}] = {0};
+
+            for (uint16_t _y = 1; _y < {{ block_size - 1 }}; _y += 1) {
+                const uint16_t rowOffset = blockOffsetY + _y * {{ width }} + blockOffsetX;
+                const uint16_t rowOffsetBefore = rowOffset - {{ width }};
+                const uint16_t rowOffsetAfter = rowOffset + {{ width }};
+
+                for (uint16_t _x = 1; _x < {{ block_size - 1 }}; _x += 1) {
+                    const uint16_t offset = rowOffset + _x;
+                    const uint16_t offsetBefore = rowOffsetBefore + _x;
+                    const uint16_t offsetAfter = rowOffsetAfter + _x;
+                    const float gy = ((float) input[offsetAfter]) - input[offsetBefore];
+                    const float gx = ((float) input[offset + 1]) - input[offset - 1];
+                    const float g = sqrt(gy * gy + gx * gx);
+                    uint8_t angle = abs(this->arctan(gy, gx) * 180 / {{ pi }}f / {{ 180 // bins }});
+
+                    if (angle >= {{ bins - 1 }}) angle = {{ bins - 1 }};
+                    hist[angle] += g;
+                }
+            }
+
+            for (uint16_t i = 0; i < {{ bins }}; i++)
+                hog[f++] = hist[i];
+
+            block += 1;
+
+            // end of cell, normalize
+            if ((block % {{ cell_size }}) == 0) {
+                const uint16_t offset = (block - {{ cell_size }}) * {{ bins }};
+                float maxGradient = 0.0001;
+
+                for (uint16_t i = 0; i < {{ cell_size * bins }}; i++) {
+                    const float h = hog[offset + i];
+
+                    if (h > maxGradient)
+                        maxGradient = h;
+                }
+
+                for (uint16_t i = 0; i < {{ cell_size * bins }}; i++) {
+                    hog[offset + i] /= maxGradient;
+                }
+
+                maxGradient = 0.0001;
+            }
+        }
+    }
+
+
+    // copy over
+    for (uint16_t i = 0; i < {{ num_outputs }}; i++)
+        output[i] = hog[i];
+{% endblock %}
+
+{% block protected %}
+
+    /**
+     * optional atan2 approximation for faster calculation
+     */
+    float arctan(float y, float x) {
+        {% if approximate_atan2 %}
+            float r = 0;
+
+            if (abs(y) < 0.00000001)
+                return 0;
+            else if (abs(x) < 0.00000001)
+                return 3.14159274 * (y > 0 ? 1 : -1);
+            else {
+                float a = min(abs(x), abs(y)) / max(abs(x), abs(y));
+                float s = a * a;
+                r = ((-0.0464964749 * s + 0.15931422) * s - 0.327622764) * s * a + a;
+
+                if (abs(y) > abs(x))
+                r = 1.57079637 - r;
+            }
+
+            if (x < 0)
+                r = 3.14159274 - r;
+            if (y < 0)
+                r = -r;
+
+            return r;
+        {% else %}
+            return atan2(y, x);
+        {% endif %}
+    }
+
+{% endblock %}

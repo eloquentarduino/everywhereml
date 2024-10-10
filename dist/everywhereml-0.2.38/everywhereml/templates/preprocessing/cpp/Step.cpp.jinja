@@ -1,0 +1,29 @@
+#ifndef {{ UUID }}
+#define {{ UUID }}
+
+/**
+ {{ str(this) | to_c_comment }}
+ */
+class {{ class_name }} {
+    public:
+
+        /**
+         * Transform input vector
+         */
+        bool transform({{ dtype or 'float' }} *x) {
+            {% block transform %}
+                // @todo implement step code
+            {% endblock %}
+
+            return true;
+        }
+
+    protected:
+        {% block protected %}{% endblock %}
+};
+
+{% if instance_name %}
+static {{ class_name }} {{ instance_name }};
+{% endif %}
+
+#endif

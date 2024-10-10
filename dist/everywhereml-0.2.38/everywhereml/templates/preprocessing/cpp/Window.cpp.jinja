@@ -1,0 +1,34 @@
+{% extends './Step' %}
+
+{% block transform %}
+    // append x to queue
+    memcpy(queue + head, x, sizeof(float) * {{ num_inputs }});
+    head += {{ num_inputs }};
+
+    if (head != {{ length * num_inputs }})
+        return false;
+
+    // copy queue to x and shift
+    memcpy(x, queue, sizeof(float) * {{ length * num_inputs }});
+
+    {% if shift != length %}
+        memcpy(queue, queue + {{ shift * num_inputs }}, sizeof(float) * {{ (length - shift) * num_inputs }});
+    {% endif %}
+
+    head -= {{ shift * num_inputs }};
+
+{% endblock %}
+
+{% block protected %}
+    uint16_t head = 0;
+    float queue[{{ length * num_inputs }}] = {0};
+{% endblock %}
+
+{% block public %}
+    /**
+     * Reset step state
+     */
+    void reset() {
+        head = 0;
+    }
+{% endblock %}
